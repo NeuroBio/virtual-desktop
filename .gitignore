@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Testing (Jest)
+coverage/
+.jest/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Electron Build / Package outputs (future proofing)
+dist/
+out/
+*.exe
+*.dmg
+*.AppImage
+
+# Local environment variables
+.env
+
+#misc
+.eslintcache
