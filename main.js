@@ -1,13 +1,17 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, screen } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const AutoLaunch = require('auto-launch');
 let databasePath = '';
 
 function createWindow() {
+	const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize;
+	const panelWidth = screenWidth / 5;
 	const win = new BrowserWindow({
-		width: 200,
-		height: 800,
+		width: panelWidth,
+		height: screenHeight,
+		x: screenWidth - panelWidth,
+		y: 0,
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
 			contextIsolation: true,
