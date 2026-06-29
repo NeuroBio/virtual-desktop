@@ -1,6 +1,8 @@
 /* global d3 */
 
-
+d3.select('body').on('click contextmenu', () => {
+	d3.select('#context-menu').style('display', 'none');
+});
 
 function populateIcons(database) {
 	console.log(database);
@@ -9,8 +11,18 @@ function populateIcons(database) {
 	database[category].shortcuts.forEach((shortcut) => {
 		const entry = categoryElement.append('div')
 			.on('dblclick', () => launch(shortcut.path))
-			.on('contextmenu', (event) => remove({ event, category, shortcut }));
+			.on('contextmenu', () => {
+				const event = d3.event;
+				event.preventDefault();
+				event.stopPropagation();
+				d3.select('#context-menu')
+					.style('left', `${event.pageX}px`)
+					.style('top', `${event.pageY}px`)
+					.style('display', 'block');
 
+				d3.select('#remove-shortcut')
+					.on('click', () => remove({ event, category, shortcut }));
+			});
 
 		setupDragAndDrop({
 			database,
@@ -29,6 +41,10 @@ function populateIcons(database) {
 	});
 }
 
+function dismissContextMenu() {
+	d3.select('#context-menu').style('display', 'none');
+}
+
 
 function repopulateIcons(database) {
 	d3.select('#writing-shortcuts').html(''); // should be #categories
@@ -43,11 +59,7 @@ async function launch(path) {
 }
 
 async function remove({ event, category, shortcut }) {
-	if (event && typeof event.preventDefault === 'function') {
-		event.preventDefault();
-	} else if (window.event) {
-		window.event.preventDefault();
-	}
+
 
 	const confirmDelete = confirm(`Remove "${shortcut.name}" from ${category}?`);
 	if (confirmDelete) {
@@ -60,6 +72,8 @@ async function remove({ event, category, shortcut }) {
 			repopulateIcons(database);
 		}
 	}
+
+	dismissContextMenu();
 }
 
 function setupDragAndDrop({ node, database, shortcut, category }) {

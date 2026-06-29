@@ -68,8 +68,8 @@ ipcMain.handle('add-file-shortcut', async (event, data) => {
 		path: filePath,
 		isFile: true,
 	});
-	await applyIcons(database);
 
+	await readyForUi(database);
 	return { success: true, database };
 });
 
@@ -88,16 +88,15 @@ ipcMain.handle('add-folder-shortcut', async (event, data) => {
 		path: folderPath,
 		isFile: false,
 	});
-	await applyIcons(database);
 
+	await readyForUi(database);
 	return { success: true, database };
 });
 
 ipcMain.handle('init', async () => {
 	try {
 		const database = loadDatabase();
-		await applyIcons(database);
-
+		await readyForUi(database);
 		return database;
 	} catch (error) {
 		console.error("Failed to read database:", error);
@@ -125,11 +124,10 @@ ipcMain.handle('delete-shortcut', async (event, data) => {
 	try {
 		const database = loadDatabase();
 
-		database[category].shortcuts = database[category].shortcuts.filter(
-			shortcut => shortcut.id !== shortcutId);
-
+		delete database[category].shortcuts[shortcutId];
 		saveDataBase(database);
-		await applyIcons(database);
+
+		await readyForUi(database);
 		return { success: true, database };
 	} catch (error) {
 		console.error("Failed to delete shortcut:", error);
@@ -142,7 +140,10 @@ ipcMain.handle('reorder', async (event, data) => {
 	try {
 		const database = loadDatabase();
 
-		database[category].shortcuts = shortcuts.map((s) => toShortcutDto(s));
+		database[category].shortcuts = shortcuts.reduce((keyed, s) => {
+			keyed[s.id] = toShortcutDto(s);
+			return keyed;
+		}, {});
 		saveDataBase(database);
 		return { success: true };
 	} catch (error) {
@@ -164,21 +165,24 @@ function saveDataBase(database) {
 }
 
 function addToDatabase({ database, category, path, isFile }) {
-	database[category] ??= { shortcuts: [] };
-	database[category].shortcuts.push({
-		id: Date.now().toString(),
+	database[category] ??= { shortcuts: {} };
+	const id = Date.now().toString();
+	database[category].shortcuts[id] = {
+		id,
 		path,
 		isFile,
 		name: getShortcutName(path),
-	});
+		position: Object.keys(database[category].shortcuts).length,
+	};
 	saveDataBase(database);
 }
 
 async function applyIcons(database) {
 	// must be for loop because async badness
 	for (const category of Object.keys(database)) {
-		for (const shortcut of database[category].shortcuts) {
-			let icon = iconCache[shortcut.id];
+		for (const shortcutId of Object.keys(database[category].shortcuts)) {
+			const shortcut = database[category].shortcuts[shortcutId];
+			let icon = iconCache[shortcutId];
 			if (!icon) {
 				icon = await getIcon(shortcut);
 				iconCache[shortcut.id] = icon;
@@ -229,5 +233,13 @@ function toShortcutDto(shortcut) {
 		name: shortcut.name,
 		isFile: shortcut.isFile
 	};
+}
+
+async function readyForUi(database) {
+	await applyIcons(database);
+	Object.values(database).forEach((category) => {
+		category.shortcuts = Object.values(category.shortcuts)
+			.sort((a, b) => a.position - b.position);
+	});
 }
 
