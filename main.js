@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, screen, shell } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const AutoLaunch = require('auto-launch');
@@ -62,7 +62,12 @@ ipcMain.handle('add-file-shortcut', async (event, data) => {
 	}
 	const filePath = result.filePaths[0];
 	const database = loadDatabase();
-	addToDatabase({ database, category, filePath });
+	addToDatabase({
+		database,
+		category,
+		path: filePath,
+		isFile: true,
+	});
 
 	return { success: true, updatedData: database };
 });
@@ -74,12 +79,52 @@ ipcMain.handle('add-folder-shortcut', async (event, data) => {
 	if (result.canceled || result.filePaths.length === 0) {
 		return { success: false, reason: 'canceled' };
 	}
-	const filePath = result.filePaths[0];
+	const folderPath = result.filePaths[0];
 	const database = loadDatabase();
-	addToDatabase({ database, category, filePath });
+	addToDatabase({
+		database,
+		category,
+		path: folderPath,
+		isFile: false,
+	});
 
 	return { success: true, updatedData: database };
 });
+
+ipcMain.handle('init', async () => {
+	try {
+		const database = loadDatabase();
+
+		// must be for loop because async badness
+		for (const category of Object.keys(database)) {
+			for (const shortcut of database[category].shortcuts) {
+				shortcut.icon = await getIcon(shortcut);
+			};
+		};
+
+		return database;
+	} catch (error) {
+		console.error("Failed to read database:", error);
+		return {};
+	}
+});
+
+
+ipcMain.handle('launch', async (event, filePath) => {
+	try {
+		const errorMessage = await shell.openPath(filePath);
+
+		if (errorMessage) {
+			console.error(`Windows shell launch failed: ${errorMessage}`);
+			return { success: false, error: errorMessage };
+		}
+		return { success: true };
+	} catch (error) {
+		console.error("Execution handler crash:", error);
+		return { success: false, error: error.message };
+	}
+});
+
 
 function loadDatabase() {
 	const rawData = fs.readFileSync(databasePath, 'utf-8');
@@ -90,11 +135,31 @@ function saveDataBase(database) {
 	fs.writeFileSync(databasePath, JSON.stringify(database, null, 2), 'utf-8');
 }
 
-function addToDatabase({ database, category, filePath }) {
+function addToDatabase({ database, category, path, isFile }) {
 	database[category] ??= { shortcuts: [] };
 	database[category].shortcuts.push({
 		id: Date.now().toString(),
-		path: filePath
+		path,
+		isFile,
+		name: getShortcutName(path),
 	});
 	saveDataBase(database);
+}
+
+async function getIcon({ isFile, path }) {
+	try {
+		if (isFile) {
+			const nativeIcon = await app.getFileIcon(path, { size: 'large' });
+			return nativeIcon.toDataURL();
+		}
+		return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4Ij48cGF0aCBmaWxsPSIjRkZDQTI4IiBkPSJNMTAgNEg0Yy0xLjEgMC0xLjk5LjktMS45OSAyTDIgMThjMCAxLjEuOSAyIDIgMmgxNmMxLjEgMCAyLS45IDItMlY4YzAtMS4xLS45LTItMi0yaC04bC0yLTJ6Ii8+PC9zdmc+';
+	} catch (iconError) {
+		console.error(`Failed to get icon for: ${path}`, iconError);
+		const nativeIcon = await app.getFileIcon('', { size: 'large' });
+		return nativeIcon.toDataURL();
+	}
+}
+
+function getShortcutName(path) {
+	return path.split(/[\\/]+/).pop();
 }
