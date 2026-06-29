@@ -6,4 +6,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
 	init: () => ipcRenderer.invoke('init'),
 	launch: (data) => ipcRenderer.invoke('launch', data),
 	deleteShortcut: (data) => ipcRenderer.invoke('delete-shortcut', data),
+	reorder: (data) => ipcRenderer.invoke('reorder', data),
 });

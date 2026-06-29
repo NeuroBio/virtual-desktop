@@ -128,7 +128,7 @@ ipcMain.handle('delete-shortcut', async (event, data) => {
 		database[category].shortcuts = database[category].shortcuts.filter(
 			shortcut => shortcut.id !== shortcutId);
 
-		fs.writeFileSync(databasePath, JSON.stringify(database, null, 2), 'utf-8');
+		saveDataBase(database);
 		await applyIcons(database);
 		return { success: true, database };
 	} catch (error) {
@@ -136,6 +136,21 @@ ipcMain.handle('delete-shortcut', async (event, data) => {
 		return { success: false, error: error.message };
 	}
 });
+
+ipcMain.handle('reorder', async (event, data) => {
+	const { category, shortcuts } = data;
+	try {
+		const database = loadDatabase();
+
+		database[category].shortcuts = shortcuts.map((s) => toShortcutDto(s));
+		saveDataBase(database);
+		return { success: true };
+	} catch (error) {
+		console.error("Failed to save sort order:", error);
+		return { success: false };
+	}
+});
+
 
 
 
@@ -205,5 +220,14 @@ async function getSteamIcon(path) {
 		const iconBuffer = fs.readFileSync(localIconPath);
 		return `data:image/x-icon;base64,${iconBuffer.toString('base64')}`;
 	}
+}
+
+function toShortcutDto(shortcut) {
+	return {
+		id: shortcut.id,
+		path: shortcut.path,
+		name: shortcut.name,
+		isFile: shortcut.isFile
+	};
 }
 

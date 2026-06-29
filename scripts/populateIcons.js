@@ -1,16 +1,23 @@
 /* global d3 */
 
+
+
 function populateIcons(database) {
 	console.log(database);
-	const category = d3.select('#writing-shortcuts');
-	database['Writing'].shortcuts.forEach((shortcut) => {
-		const entry = category.append('div')
-			.on('click', () => launch(shortcut.path))
-			.on('contextmenu', (event) => remove({
-				event,
-				category: 'Writing',
-				shortcut,
-			}));
+	const categoryElement = d3.select('#writing-shortcuts');
+	const category = 'Writing';
+	database[category].shortcuts.forEach((shortcut) => {
+		const entry = categoryElement.append('div')
+			.on('dblclick', () => launch(shortcut.path))
+			.on('contextmenu', (event) => remove({ event, category, shortcut }));
+
+
+		setupDragAndDrop({
+			database,
+			node: entry.node(),
+			shortcut,
+			category,
+		});
 
 		entry.attr('class', 'icon-entry')
 			.append('img')
@@ -20,6 +27,12 @@ function populateIcons(database) {
 			.attr('class', 'icon-name')
 			.text(shortcut.name);
 	});
+}
+
+
+function repopulateIcons(database) {
+	d3.select('#writing-shortcuts').html(''); // should be #categories
+	populateIcons(database);
 }
 
 async function launch(path) {
@@ -49,11 +62,33 @@ async function remove({ event, category, shortcut }) {
 	}
 }
 
+function setupDragAndDrop({ node, database, shortcut, category }) {
+	node.setAttribute('draggable', 'true');
 
+	node.ondragstart = (event) => {
+		event.dataTransfer.setData('text/plain', shortcut.id);
+	};
 
+	node.ondragover = (event) => {
+		event.preventDefault();
+	};
 
+	node.ondrop = async (event) => {
+		const incomingId = event.dataTransfer.getData('text/plain');
+		if (incomingId === shortcut.id) return;
 
-function repopulateIcons(database) {
-	d3.select('#writing-shortcuts').html(''); // should be #categories
-	populateIcons(database);
+		const shortcuts = database[category].shortcuts;
+		const dragIdx = shortcuts.findIndex(s => s.id === incomingId);
+		const dropIdx = shortcuts.findIndex(s => s.id === shortcut.id);
+
+		const [movedItem] = shortcuts.splice(dragIdx, 1);
+		shortcuts.splice(dropIdx, 0, movedItem);
+
+		const { success } = await window.electronAPI.reorder({ category, shortcuts });
+		if (success) {
+			repopulateIcons(database);
+		}
+	};
 }
+
+

@@ -26,10 +26,10 @@ button {
 	flex-wrap: wrap;
 	row-gap: 3px;
 	column-gap: 3px;
-	cursor: pointer;
 }
 
 .icon-entry {
+	cursor: pointer;
 	display: inline-flex;
 	flex-direction: column;
 	width: 75px;
