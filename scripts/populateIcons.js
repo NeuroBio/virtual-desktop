@@ -23,3 +23,8 @@ async function launch(path) {
 		console.error(`Could not launch asset: ${result.error}`);
 	}
 }
+
+function repopulateIcons(database) {
+	d3.select('#writing-shortcuts').html(''); // should be #categories
+	populateIcons(database);
+}

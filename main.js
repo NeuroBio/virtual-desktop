@@ -68,8 +68,9 @@ ipcMain.handle('add-file-shortcut', async (event, data) => {
 		path: filePath,
 		isFile: true,
 	});
+	await applyIcons(database);
 
-	return { success: true, updatedData: database };
+	return { success: true, database };
 });
 
 ipcMain.handle('add-folder-shortcut', async (event, data) => {
@@ -87,20 +88,15 @@ ipcMain.handle('add-folder-shortcut', async (event, data) => {
 		path: folderPath,
 		isFile: false,
 	});
+	await applyIcons(database);
 
-	return { success: true, updatedData: database };
+	return { success: true, database };
 });
 
 ipcMain.handle('init', async () => {
 	try {
 		const database = loadDatabase();
-
-		// must be for loop because async badness
-		for (const category of Object.keys(database)) {
-			for (const shortcut of database[category].shortcuts) {
-				shortcut.icon = await getIcon(shortcut);
-			};
-		};
+		await applyIcons(database);
 
 		return database;
 	} catch (error) {
@@ -146,9 +142,22 @@ function addToDatabase({ database, category, path, isFile }) {
 	saveDataBase(database);
 }
 
+async function applyIcons(database) {
+	// must be for loop because async badness
+	for (const category of Object.keys(database)) {
+		for (const shortcut of database[category].shortcuts) {
+			shortcut.icon = await getIcon(shortcut);
+		};
+	};
+}
+
 async function getIcon({ isFile, path }) {
 	try {
 		if (isFile) {
+			if (path.toLowerCase().endsWith('.url')) {
+				return getSteamIcon(path);
+			}
+
 			const nativeIcon = await app.getFileIcon(path, { size: 'large' });
 			return nativeIcon.toDataURL();
 		}
@@ -160,6 +169,19 @@ async function getIcon({ isFile, path }) {
 	}
 }
 
-function getShortcutName(path) {
-	return path.split(/[\\/]+/).pop();
+function getShortcutName(filePath) {
+	return path.parse(filePath).name;
 }
+
+async function getSteamIcon(path) {
+	const fileContents = fs.readFileSync(path, 'utf-8');
+	const iconMatch = fileContents.match(/IconFile=(.+)/i);
+
+	if (iconMatch && iconMatch[1]) {
+		const localIconPath = iconMatch[1].replace(/\r/g, '').trim();
+
+		const iconBuffer = fs.readFileSync(localIconPath);
+		return `data:image/x-icon;base64,${iconBuffer.toString('base64')}`;
+	}
+}
+

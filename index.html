@@ -7,16 +7,22 @@
 </head>
 
 <body>
-	<h2>Writing</h2>
-	<button onclick="addFileShortcut()">+ File</button>
-	<button onclick="addFolderShortcut()">+ Folder</button>
-	<div id="writing-shortcuts" class="shortcut-container">
+	<h2>
+		Writing
+		<div class="add-buttons">
+			<button onclick="addFileShortcut()">+ File</button>
+			<button onclick="addFolderShortcut()">+ Folder</button>
+		</div>
+	</h2>
+	<div id="categories">
+		<div id="writing-shortcuts" class="shortcut-container">
 
+		</div>
 	</div>
 
 	<script src="https://d3js.org/d3.v5.min.js"></script>
-	<script src="./scripts/init.js"></script>
 	<script src="./scripts/populateIcons.js"></script>
+	<script src="./scripts/init.js"></script>
 	<script src="./scripts/addShortcut.js"></script>
 </body>
 
