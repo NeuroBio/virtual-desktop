@@ -136,16 +136,23 @@ ipcMain.handle('delete-shortcut', async (event, data) => {
 });
 
 ipcMain.handle('reorder', async (event, data) => {
-	const { category, shortcuts } = data;
+	const { category, dragId, dropId } = data;
 	try {
 		const database = loadDatabase();
+		const sortedShortcuts = Object.values(database[category].shortcuts)
+			.sort((a, b) => a.position - b.position);
+		const [movedItem] = sortedShortcuts.splice(dragId, 1);
+		sortedShortcuts.splice(dropId, 0, movedItem);
 
-		database[category].shortcuts = shortcuts.reduce((keyed, s) => {
-			keyed[s.id] = toShortcutDto(s);
+		database[category].shortcuts = sortedShortcuts.reduce((keyed, s, i) => {
+			s.position = i;
+			keyed[s.id] = s;
 			return keyed;
 		}, {});
+
 		saveDataBase(database);
-		return { success: true };
+		readyForUi(database);
+		return { success: true, database };
 	} catch (error) {
 		console.error("Failed to save sort order:", error);
 		return { success: false };
@@ -224,15 +231,6 @@ async function getSteamIcon(path) {
 		const iconBuffer = fs.readFileSync(localIconPath);
 		return `data:image/x-icon;base64,${iconBuffer.toString('base64')}`;
 	}
-}
-
-function toShortcutDto(shortcut) {
-	return {
-		id: shortcut.id,
-		path: shortcut.path,
-		name: shortcut.name,
-		isFile: shortcut.isFile
-	};
 }
 
 async function readyForUi(database) {

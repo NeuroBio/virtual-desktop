@@ -22,6 +22,8 @@ function populateIcons(database) {
 
 				d3.select('#remove-shortcut')
 					.on('click', () => remove({ event, category, shortcut }));
+				d3.select('#rename-shortcut')
+					.on('click', () => rename({ event, category, shortcut }));
 			});
 
 		setupDragAndDrop({
@@ -59,8 +61,6 @@ async function launch(path) {
 }
 
 async function remove({ event, category, shortcut }) {
-
-
 	const confirmDelete = confirm(`Remove "${shortcut.name}" from ${category}?`);
 	if (confirmDelete) {
 		const { success, database } = await window.electronAPI.deleteShortcut({
@@ -73,6 +73,10 @@ async function remove({ event, category, shortcut }) {
 		}
 	}
 
+	dismissContextMenu();
+}
+
+async function rename({ event, category, shortcut }) {
 	dismissContextMenu();
 }
 
@@ -89,18 +93,17 @@ function setupDragAndDrop({ node, database, shortcut, category }) {
 
 	node.ondrop = async (event) => {
 		const incomingId = event.dataTransfer.getData('text/plain');
-		if (incomingId === shortcut.id) return;
+		if (incomingId === shortcut.id) {
+			return;
+		}
 
 		const shortcuts = database[category].shortcuts;
-		const dragIdx = shortcuts.findIndex(s => s.id === incomingId);
-		const dropIdx = shortcuts.findIndex(s => s.id === shortcut.id);
+		const dragId = shortcuts.findIndex(s => s.id === incomingId);
+		const dropId = shortcuts.findIndex(s => s.id === shortcut.id);
 
-		const [movedItem] = shortcuts.splice(dragIdx, 1);
-		shortcuts.splice(dropIdx, 0, movedItem);
-
-		const { success } = await window.electronAPI.reorder({ category, shortcuts });
+		const { success, database: reordered } = await window.electronAPI.reorder({ category, dragId, dropId });
 		if (success) {
-			repopulateIcons(database);
+			repopulateIcons(reordered);
 		}
 	};
 }
