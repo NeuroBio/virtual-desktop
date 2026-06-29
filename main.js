@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const AutoLaunch = require('auto-launch');
 let databasePath = '';
+const iconCache = {};
 
 function createWindow() {
 	const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize;
@@ -162,7 +163,12 @@ async function applyIcons(database) {
 	// must be for loop because async badness
 	for (const category of Object.keys(database)) {
 		for (const shortcut of database[category].shortcuts) {
-			shortcut.icon = await getIcon(shortcut);
+			let icon = iconCache[shortcut.id];
+			if (!icon) {
+				icon = await getIcon(shortcut);
+				iconCache[shortcut.id] = icon;
+			}
+			shortcut.icon = icon;
 		};
 	};
 }
