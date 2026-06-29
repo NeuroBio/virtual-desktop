@@ -1,8 +1,6 @@
 /* global repopulateIcons */
 
-async function addFileShortcut() {
-	const category = "Writing";
-
+async function addFileShortcut(category) {
 	const { success, database } = await window.electronAPI.addFileShortcut({ category });
 
 	if (success) {
@@ -11,9 +9,7 @@ async function addFileShortcut() {
 	}
 }
 
-async function addFolderShortcut() {
-	const category = "Writing";
-
+async function addFolderShortcut(category) {
 	const { success, database } = await window.electronAPI.addFolderShortcut({ category });
 
 	if (success) {

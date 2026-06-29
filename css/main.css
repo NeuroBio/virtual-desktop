@@ -15,17 +15,19 @@ h2 {
 	display: flex;
 	justify-content: space-between;
 	background-color: rgb(15, 14, 15);
-	padding: 5px;
+	padding: 7px 5px;
+	font-size: 15pt;
+	border-radius: 5%;
 }
 
 button {
-	background-color: rgb(32, 28, 32);
+	background-color: rgb(68, 54, 68);
 	color: white;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 9pt;
 	border: 0;
 	padding: 5px;
-	border-radius: 15%;
+	border-radius: 5%;
 	cursor: pointer;
 }
 
@@ -67,8 +69,8 @@ img {
 .context-menu {
 	position: absolute;
 	background-color: rgb(15, 14, 15);
-	padding: 0;
-	border-radius: 15%;
+	padding: 1px;
+	border-radius: 5%;
 	border: 1px solid rgb(15, 14, 15);
 }
 
@@ -77,8 +79,9 @@ img {
 	margin: 0;
 	padding: 5px;
 	cursor: pointer;
+	border-radius: 5%;
 }
 
 .context-menu-item:hover {
-	background-color: rgb(32, 28, 32);
+	background-color: rgb(68, 54, 68);
 }

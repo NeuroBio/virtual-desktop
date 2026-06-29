@@ -4,21 +4,29 @@
 <head>
 	<title>Virtual Desktop</title>
 	<link href="./css/main.css" rel="stylesheet" />
+	<link href="./css/accordion.css" rel="stylesheet" />
 </head>
 
 <body>
-	<h2>
-		Writing
-		<div class="add-buttons">
-			<button onclick="addFileShortcut()">+ File</button>
-			<button onclick="addFolderShortcut()">+ Folder</button>
-		</div>
-	</h2>
-	<div id="categories">
-		<div id="writing-shortcuts" class="shortcut-container">
+	<button>+ Category</button>
+	<section class="accordion is-open">
+		<h2 class="accordion-header">
+			<span>
+				<button class="accordion-icon"></button>
+				Writing
+			</span>
+			<div class="add-buttons">
+				<button onclick="addFileShortcut('Writing')">+ File</button>
+				<button onclick="addFolderShortcut('Writing')">+ Folder</button>
+			</div>
+		</h2>
+		<div class="accordion-body">
+			<div id="writing-shortcuts" class="shortcut-container">
 
+			</div>
 		</div>
-	</div>
+	</section>
+
 
 	<ul id="context-menu" class="context-menu" style="display: none;">
 		<li class="context-menu-item" id="rename-shortcut">Rename</li>
