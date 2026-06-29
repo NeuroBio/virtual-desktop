@@ -52,7 +52,6 @@ app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') app.quit();
 });
 
-
 ipcMain.handle('add-file-shortcut', async (event, data) => {
 	const { category } = data;
 	const result = await dialog.showOpenDialog({ properties: ['openFile'] });
@@ -105,7 +104,6 @@ ipcMain.handle('init', async () => {
 	}
 });
 
-
 ipcMain.handle('launch', async (event, filePath) => {
 	try {
 		const errorMessage = await shell.openPath(filePath);
@@ -120,6 +118,24 @@ ipcMain.handle('launch', async (event, filePath) => {
 		return { success: false, error: error.message };
 	}
 });
+
+ipcMain.handle('delete-shortcut', async (event, data) => {
+	const { category, shortcutId } = data;
+	try {
+		const database = loadDatabase();
+
+		database[category].shortcuts = database[category].shortcuts.filter(
+			shortcut => shortcut.id !== shortcutId);
+
+		fs.writeFileSync(databasePath, JSON.stringify(database, null, 2), 'utf-8');
+		await applyIcons(database);
+		return { success: true, database };
+	} catch (error) {
+		console.error("Failed to delete shortcut:", error);
+		return { success: false, error: error.message };
+	}
+});
+
 
 
 function loadDatabase() {
