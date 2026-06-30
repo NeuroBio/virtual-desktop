@@ -159,7 +159,20 @@ ipcMain.handle('reorder', async (event, data) => {
 	}
 });
 
+ipcMain.handle('renameShortcut', async (event, data) => {
+	const { category, shortcutId, name } = data;
+	try {
+		const database = loadDatabase();
+		database[category].shortcuts[shortcutId].name = name;
 
+		saveDataBase(database);
+		readyForUi(database);
+		return { success: true, database };
+	} catch (error) {
+		console.error("Failed to update name:", error);
+		return { success: false };
+	}
+});
 
 
 function loadDatabase() {

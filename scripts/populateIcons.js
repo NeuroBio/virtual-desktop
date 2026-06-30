@@ -61,22 +61,43 @@ async function launch(path) {
 }
 
 async function remove({ event, category, shortcut }) {
-	const confirmDelete = confirm(`Remove "${shortcut.name}" from ${category}?`);
-	if (confirmDelete) {
-		const { success, database } = await window.electronAPI.deleteShortcut({
-			category,
-			shortcutId: shortcut.id,
-		});
+	setupConfirmPrompt({
+		message: `Remove ${shortcut.name} from ${category}?`,
+		callBack: async (response) => {
+			if (response === 'submit') {
+				const { success, database } = await window.electronAPI.deleteShortcut({
+					category,
+					shortcutId: shortcut.id,
+				});
 
-		if (success) {
-			repopulateIcons(database);
+				if (success) {
+					repopulateIcons(database);
+				}
+			}
 		}
-	}
-
+	});
 	dismissContextMenu();
 }
 
 async function rename({ event, category, shortcut }) {
+	setupInputPrompt({
+		message: `Rename ${shortcut.name} from ${category}:`,
+		label: 'Name',
+		callBack: async (response, name) => {
+			if (response === 'submit') {
+				const { success, database } = await window.electronAPI.renameShortcut({
+					category,
+					shortcutId: shortcut.id,
+					name,
+				});
+
+				if (success) {
+					repopulateIcons(database);
+				}
+			}
+		}
+	});
+
 	dismissContextMenu();
 }
 
@@ -106,6 +127,21 @@ function setupDragAndDrop({ node, database, shortcut, category }) {
 			repopulateIcons(reordered);
 		}
 	};
+}
+
+function setupConfirmPrompt({ message, callBack }) {
+	d3.select('#confirm-text').text(message);
+	const prompt = d3.select('#confirm-prompt').node();
+	prompt.showModal();
+	prompt.addEventListener('close', () => callBack(prompt.returnValue));
+}
+
+function setupInputPrompt({ message, label, callBack }) {
+	d3.select('#input-text').text(message);
+	const input = d3.select('#input-prompt-input').text(label);
+	const prompt = d3.select('#input-prompt').node();
+	prompt.showModal();
+	prompt.addEventListener('close', () => callBack(prompt.returnValue, input.property('value')));
 }
 
 

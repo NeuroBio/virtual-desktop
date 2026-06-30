@@ -1,0 +1,27 @@
+dialog {
+	top: 100px;
+	margin: 0 auto;
+	position: fixed;
+	background-color: rgb(32, 28, 32);
+	color: whitesmoke;
+	border: 1px solid rgb(68, 54, 68);
+	border-radius: 5px;
+	min-width: 200px;
+}
+
+dialog::backdrop {
+	background-color: rgba(0, 0, 0, 0.7) !important;
+	opacity: 1 !important;
+}
+
+.dialog-actions {
+	display: flex;
+	justify-content: space-between;
+}
+
+input {
+	color: whitesmoke;
+	background-color: rgb(15, 14, 15);
+	border: 0;
+	padding: 3px;
+}

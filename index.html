@@ -5,6 +5,7 @@
 	<title>Virtual Desktop</title>
 	<link href="./css/main.css" rel="stylesheet" />
 	<link href="./css/accordion.css" rel="stylesheet" />
+	<link href="./css/dialog.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -26,6 +27,29 @@
 			</div>
 		</div>
 	</section>
+
+	<dialog id="confirm-prompt">
+		<form method="dialog">
+			<p id="confirm-text"></p>
+			<hr>
+			<div class="dialog-actions">
+				<button value="cancel">Cancel</button>
+				<button value="submit">OK</button>
+			</div>
+		</form>
+	</dialog>
+
+	<dialog id="input-prompt">
+		<form method="dialog">
+			<p id="input-text"></p>
+			<label for="input-prompt-input"></label>
+			<input type="text" id="input-prompt-input" name="input" required>
+			<hr>
+			<div class="dialog-actions">
+				<button value="submit">Submit</button>
+			</div>
+		</form>
+	</dialog>
 
 
 	<ul id="context-menu" class="context-menu" style="display: none;">
