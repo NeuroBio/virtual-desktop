@@ -1,9 +1,6 @@
 html {
-	height: 100%;
-}
-
-*:focus {
-	outline: 2px solid #b91bbe;
+	height: 100vh;
+	margin: 0;
 }
 
 body {
@@ -12,16 +9,25 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 	display: flex;
 	flex-direction: column;
-	min-height: 100%;
+	min-height: 100vh;
+	margin: 0;
+	padding: 4px;
+	box-sizing: border-box;
+}
+
+
+*:focus {
+	outline: 2px solid #b91bbe;
 }
 
 h2 {
 	display: flex;
 	justify-content: space-between;
 	background-color: rgb(15, 14, 15);
-	padding: 7px 5px;
+	padding: 5px;
 	font-size: 15pt;
-	border-radius: 5px;
+	border-radius: 5px 5px 0 0;
+	margin-bottom: 0;
 }
 
 button {
