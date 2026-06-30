@@ -28,7 +28,7 @@ async function launchShortcut(path) {
 
 async function removeShortcut({ event, category, shortcut }) {
 	setupConfirmPrompt({
-		message: `Remove ${shortcut.name} from ${category}?`,
+		message: `Remove ${shortcut.alias} from ${category}?`,
 		callBack: async (response) => {
 			if (response === 'submit') {
 				const { success, database } = await window.electronAPI.deleteShortcut({
@@ -47,15 +47,15 @@ async function removeShortcut({ event, category, shortcut }) {
 
 async function renameShortcut({ event, category, shortcut }) {
 	setupInputPrompt({
-		message: `Rename ${shortcut.name} from ${category}:`,
+		message: `Rename ${shortcut.alias} from ${category}:`,
 		label: 'Name',
-		defaultValue: shortcut.name,
-		callBack: async (response, name) => {
+		defaultValue: shortcut.alias,
+		callBack: async (response, alias) => {
 			if (response === 'submit') {
 				const { success, database } = await window.electronAPI.renameShortcut({
 					category,
 					shortcutId: shortcut.id,
-					name,
+					alias,
 				});
 
 				if (success) {

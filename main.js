@@ -160,10 +160,10 @@ ipcMain.handle('reorder', async (event, data) => {
 });
 
 ipcMain.handle('rename-shortcut', async (event, data) => {
-	const { category, shortcutId, name } = data;
+	const { category, shortcutId, alias } = data;
 	try {
 		const database = loadDatabase();
-		database[category].shortcuts[shortcutId].name = name;
+		database[category].shortcuts[shortcutId].alias = alias;
 
 		saveDataBase(database);
 		readyForUi(database);
@@ -203,11 +203,13 @@ function saveDataBase(database) {
 function addToDatabase({ database, category, path, isFile }) {
 	database[category] ??= { shortcuts: {} };
 	const id = Date.now().toString();
+	const name = getShortcutName(path);
 	database[category].shortcuts[id] = {
 		id,
 		path,
 		isFile,
-		name: getShortcutName(path),
+		name,
+		alias: name,
 		position: Object.keys(database[category].shortcuts).length,
 	};
 	saveDataBase(database);

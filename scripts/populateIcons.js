@@ -87,7 +87,7 @@ function populateIcons(database, category) {
 
 		entry.append('span')
 			.attr('class', 'icon-name')
-			.text(shortcut.name);
+			.text(shortcut.alias);
 	});
 }
 
