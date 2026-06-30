@@ -179,7 +179,11 @@ ipcMain.handle('add-category', async (event, data) => {
 	try {
 		const database = loadDatabase();
 
-		database[category] = { shortcuts: {} };
+		database[category] = {
+			defaultOpen: false,
+			position: Object.keys(database).length,
+			shortcuts: {},
+		};
 
 		saveDataBase(database);
 		readyForUi(database);

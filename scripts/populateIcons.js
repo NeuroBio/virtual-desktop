@@ -5,6 +5,7 @@
 /* global removeShortcut */
 /* global renameShortcut */
 /* global setupDragAndDrop */
+/* global toggleAccordion */
 
 
 
@@ -20,15 +21,21 @@ function populateCategories(database) {
 }
 
 function populateCategory({ database, category }) {
+	const isOpen = category.defaultOpen;
 	const main = d3.select('#categories')
 		.append('section')
+		.attr('id', toAccordionHeaderId(category))
 		.classed('accordion', true)
-		.classed('is-open', true);
+		.classed('is-open', isOpen)
+		.classed('is-closed', !isOpen);
 	const header = main.append('h2')
 		.attr('class', 'accordion-header');
 
 	const headerText = header.append('div');
-	headerText.append('button').attr('class', 'accordion-icon');
+	headerText.append('button')
+		.attr('class', 'accordion-icon')
+		.attr('id', toAccordionButtonId(category))
+		.on('click', () => toggleAccordion({ isOpen, category }));
 	headerText.append('span').text(category);
 
 	const headerButtons = header.append('div')
@@ -52,6 +59,14 @@ function populateCategory({ database, category }) {
 
 function toCategoryId(category) {
 	return `${category.split(' ').join('_')}-shortcuts`;
+}
+
+function toAccordionHeaderId(category) {
+	return `${category.split(' ').join('_')}-accordion`;
+}
+
+function toAccordionButtonId(category) {
+	return `${category.split(' ').join('_')}-button`;
 }
 
 function populateIcons(database, category) {

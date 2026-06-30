@@ -32,6 +32,10 @@
 			max-height: 0px;
 			transition: all .25s;
 		}
+
+		.accordion-header {
+			border-radius: 5px;
+		}
 	}
 }
 
