@@ -1,6 +1,11 @@
 /* global d3 */
 /* global addFileShortcut */
 /* global addFolderShortcut */
+/* global launchShortcut */
+/* global removeShortcut */
+/* global renameShortcut */
+
+
 
 d3.select('body').on('click contextmenu', () => {
 	d3.select('#context-menu').style('display', 'none');
@@ -49,7 +54,7 @@ function populateIcons(database, category) {
 	const categoryElement = d3.select(`#${toCategoryId(category)}`);
 	database[category].shortcuts.forEach((shortcut) => {
 		const entry = categoryElement.append('div')
-			.on('dblclick', () => launch(shortcut.path))
+			.on('dblclick', () => launchShortcut(shortcut.path))
 			.on('contextmenu', () => {
 				const event = d3.event;
 				event.preventDefault();
@@ -60,9 +65,9 @@ function populateIcons(database, category) {
 					.style('display', 'block');
 
 				d3.select('#remove-shortcut')
-					.on('click', () => remove({ event, category, shortcut }));
+					.on('click', () => removeShortcut({ event, category, shortcut }));
 				d3.select('#rename-shortcut')
-					.on('click', () => rename({ event, category, shortcut }));
+					.on('click', () => renameShortcut({ event, category, shortcut }));
 			});
 
 		setupDragAndDrop({
@@ -82,63 +87,9 @@ function populateIcons(database, category) {
 	});
 }
 
-function dismissContextMenu() {
-	d3.select('#context-menu').style('display', 'none');
-}
-
-
 function repopulateIcons({ database, category }) {
 	d3.select(`#${toCategoryId(category)}`).html(''); // should be #categories
 	populateIcons(database, category);
-}
-
-async function launch(path) {
-	const result = await window.electronAPI.launch(path);
-	if (!result.success) {
-		console.error(`Could not launch asset: ${result.error}`);
-	}
-}
-
-async function remove({ event, category, shortcut }) {
-	setupConfirmPrompt({
-		message: `Remove ${shortcut.name} from ${category}?`,
-		callBack: async (response) => {
-			if (response === 'submit') {
-				const { success, database } = await window.electronAPI.deleteShortcut({
-					category,
-					shortcutId: shortcut.id,
-				});
-
-				if (success) {
-					repopulateIcons({ database, category });
-				}
-			}
-		}
-	});
-	dismissContextMenu();
-}
-
-async function rename({ event, category, shortcut }) {
-	setupInputPrompt({
-		message: `Rename ${shortcut.name} from ${category}:`,
-		label: 'Name',
-		defaultValue: shortcut.name,
-		callBack: async (response, name) => {
-			if (response === 'submit') {
-				const { success, database } = await window.electronAPI.renameShortcut({
-					category,
-					shortcutId: shortcut.id,
-					name,
-				});
-
-				if (success) {
-					repopulateIcons({ database, category });
-				}
-			}
-		}
-	});
-
-	dismissContextMenu();
 }
 
 function setupDragAndDrop({ node, database, shortcut, category }) {
@@ -168,22 +119,3 @@ function setupDragAndDrop({ node, database, shortcut, category }) {
 		}
 	};
 }
-
-function setupConfirmPrompt({ message, callBack }) {
-	d3.select('#confirm-text').text(message);
-	const prompt = d3.select('#confirm-prompt').node();
-	prompt.showModal();
-	prompt.addEventListener('close', () => callBack(prompt.returnValue));
-}
-
-function setupInputPrompt({ message, label, defaultValue, callBack }) {
-	d3.select('#input-text').text(message);
-	d3.select('#input-prompt-label').text(label);
-	const input = d3.select('#input-prompt-input')
-		.attr('value', defaultValue || '');
-	const prompt = d3.select('#input-prompt').node();
-	prompt.showModal();
-	prompt.addEventListener('close', () => callBack(prompt.returnValue, input.property('value')));
-}
-
-
