@@ -104,7 +104,7 @@ ipcMain.handle('init', async () => {
 	}
 });
 
-ipcMain.handle('launch', async (event, filePath) => {
+ipcMain.handle('launch-shortcut', async (event, filePath) => {
 	try {
 		const errorMessage = await shell.openPath(filePath);
 
@@ -159,7 +159,7 @@ ipcMain.handle('reorder', async (event, data) => {
 	}
 });
 
-ipcMain.handle('renameShortcut', async (event, data) => {
+ipcMain.handle('rename-shortcut', async (event, data) => {
 	const { category, shortcutId, name } = data;
 	try {
 		const database = loadDatabase();
@@ -170,6 +170,22 @@ ipcMain.handle('renameShortcut', async (event, data) => {
 		return { success: true, database };
 	} catch (error) {
 		console.error("Failed to update name:", error);
+		return { success: false };
+	}
+});
+
+ipcMain.handle('add-category', async (event, data) => {
+	const { category } = data;
+	try {
+		const database = loadDatabase();
+
+		database[category] = { shortcuts: {} };
+
+		saveDataBase(database);
+		readyForUi(database);
+		return { success: true, database };
+	} catch (error) {
+		console.error("Failed to add new category:", error);
 		return { success: false };
 	}
 });

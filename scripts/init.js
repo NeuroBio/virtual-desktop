@@ -5,4 +5,4 @@ async function init() {
 	populateCategories(database);
 }
 
-window.addEventListener('DOMContentLoaded', init);
+window.addEventListener('DOMContentLoaded', init, { once: true });

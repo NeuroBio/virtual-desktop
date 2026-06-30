@@ -14,36 +14,39 @@ d3.select('body').on('click contextmenu', () => {
 function populateCategories(database) {
 	console.log(database);
 
-	Object.keys(database).forEach((category) => {
-		const main = d3.select('#categories')
-			.append('section')
-			.classed('accordion', true)
-			.classed('is-open', true);
-		const header = main.append('h2')
-			.attr('class', 'accordion-header');
+	Object.keys(database).forEach((category) =>
+		populateCategory({ database, category }));
+}
 
-		const headerText = header.append('div');
-		headerText.append('button').attr('class', 'accordion-icon');
-		headerText.append('span').text(category);
+function populateCategory({ database, category }) {
+	const main = d3.select('#categories')
+		.append('section')
+		.classed('accordion', true)
+		.classed('is-open', true);
+	const header = main.append('h2')
+		.attr('class', 'accordion-header');
 
-		const headerButtons = header.append('div')
-			.attr('class', 'add-buttons');
-		headerButtons.append('button')
-			.text('+ File')
-			.on('click', () => addFileShortcut(category));
+	const headerText = header.append('div');
+	headerText.append('button').attr('class', 'accordion-icon');
+	headerText.append('span').text(category);
 
-		headerButtons.append('button')
-			.text('+ Folder')
-			.on('click', () => addFolderShortcut(category));
+	const headerButtons = header.append('div')
+		.attr('class', 'add-buttons');
+	headerButtons.append('button')
+		.text('+ File')
+		.on('click', () => addFileShortcut(category));
 
-		main.append('div')
-			.attr('class', 'accordion-body')
-			.append('div')
-			.attr('class', 'shortcut-container')
-			.attr('id', `${toCategoryId(category)}`);
+	headerButtons.append('button')
+		.text('+ Folder')
+		.on('click', () => addFolderShortcut(category));
 
-		populateIcons(database, category);
-	});
+	main.append('div')
+		.attr('class', 'accordion-body')
+		.append('div')
+		.attr('class', 'shortcut-container')
+		.attr('id', `${toCategoryId(category)}`);
+
+	populateIcons(database, category);
 }
 
 function toCategoryId(category) {
