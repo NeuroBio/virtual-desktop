@@ -19,9 +19,26 @@ dialog::backdrop {
 	justify-content: space-between;
 }
 
+.dialog-text {
+	font-size: 11pt;
+	margin: 0 0 15px 0;
+}
+
+.input-prompt-label {
+	font-size: 9pt;
+}
+
+.field {
+	display: flex;
+	column-gap: 7px;
+}
+
 input {
+	flex-grow: 1;
 	color: whitesmoke;
 	background-color: rgb(15, 14, 15);
 	border: 0;
 	padding: 3px;
+	font-size: 9pt;
+	border-radius: 5px;
 }

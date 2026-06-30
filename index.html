@@ -15,7 +15,7 @@
 	</div>
 
 	<dialog id="confirm-prompt">
-		<form method="dialog">
+		<form method="dialog" class="dialog-text">
 			<p id="confirm-text"></p>
 			<hr>
 			<div class="dialog-actions">
@@ -27,9 +27,11 @@
 
 	<dialog id="input-prompt">
 		<form method="dialog">
-			<p id="input-text"></p>
-			<label id="input-prompt-label" for="input-prompt-input"></label>
-			<input type="text" id="input-prompt-input" name="input" required>
+			<p id="input-text" class="dialog-text"></p>
+			<div class="field">
+				<label id="input-prompt-label" for="input-prompt-input"></label>
+				<input type="text" id="input-prompt-input" name="input" required>
+			</div>
 			<hr>
 			<div class="dialog-actions">
 				<button value="submit">Submit</button>
