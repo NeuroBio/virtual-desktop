@@ -15,6 +15,16 @@ body {
 	box-sizing: border-box;
 }
 
+.frame {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+#categories {
+	flex-grow: 1;
+}
+
 .add-buttons {
 	display: inline-flex;
 	column-gap: 5px;
@@ -32,7 +42,7 @@ h2 {
 	padding: 5px;
 	font-size: 15pt;
 	border-radius: 5px 5px 0 0;
-	margin-bottom: 0;
+	margin: 0;
 }
 
 button {
@@ -106,4 +116,12 @@ hr {
 
 .context-menu-item:hover {
 	background-color: rgb(68, 54, 68);
+}
+
+footer {
+	display: flex;
+	flex-direction: row-reverse;
+	border-top: 1px solid rgb(85, 26, 80);
+	padding: 5px;
+	background-color: rgb(15, 14, 15);
 }
