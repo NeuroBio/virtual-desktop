@@ -15,6 +15,11 @@ body {
 	box-sizing: border-box;
 }
 
+.add-buttons {
+	display: inline-flex;
+	column-gap: 5px;
+}
+
 
 *:focus {
 	outline: 2px solid #b91bbe;

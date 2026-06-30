@@ -1,8 +1,8 @@
-/* global populateIcons */
+/* global populateCategories */
 
 async function init() {
 	const database = await window.electronAPI.init();
-	populateIcons(database);
+	populateCategories(database);
 }
 
 window.addEventListener('DOMContentLoaded', init);

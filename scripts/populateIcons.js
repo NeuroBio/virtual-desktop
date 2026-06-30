@@ -1,13 +1,52 @@
 /* global d3 */
+/* global addFileShortcut */
+/* global addFolderShortcut */
 
 d3.select('body').on('click contextmenu', () => {
 	d3.select('#context-menu').style('display', 'none');
 });
 
-function populateIcons(database) {
+function populateCategories(database) {
 	console.log(database);
-	const categoryElement = d3.select('#writing-shortcuts');
-	const category = 'Writing';
+
+	Object.keys(database).forEach((category) => {
+		const main = d3.select('#categories')
+			.append('section')
+			.classed('accordion', true)
+			.classed('is-open', true);
+		const header = main.append('h2')
+			.attr('class', 'accordion-header');
+
+		const headerText = header.append('div');
+		headerText.append('button').attr('class', 'accordion-icon');
+		headerText.append('span').text(category);
+
+		const headerButtons = header.append('div')
+			.attr('class', 'add-buttons');
+		headerButtons.append('button')
+			.text('+ File')
+			.on('click', () => addFileShortcut(category));
+
+		headerButtons.append('button')
+			.text('+ Folder')
+			.on('click', () => addFolderShortcut(category));
+
+		main.append('div')
+			.attr('class', 'accordion-body')
+			.append('div')
+			.attr('class', 'shortcut-container')
+			.attr('id', `${toCategoryId(category)}`);
+
+		populateIcons(database, category);
+	});
+}
+
+function toCategoryId(category) {
+	return `${category.split(' ').join('_')}-shortcuts`;
+}
+
+function populateIcons(database, category) {
+	const categoryElement = d3.select(`#${toCategoryId(category)}`);
 	database[category].shortcuts.forEach((shortcut) => {
 		const entry = categoryElement.append('div')
 			.on('dblclick', () => launch(shortcut.path))
@@ -48,9 +87,9 @@ function dismissContextMenu() {
 }
 
 
-function repopulateIcons(database) {
-	d3.select('#writing-shortcuts').html(''); // should be #categories
-	populateIcons(database);
+function repopulateIcons({ database, category }) {
+	d3.select(`#${toCategoryId(category)}`).html(''); // should be #categories
+	populateIcons(database, category);
 }
 
 async function launch(path) {
@@ -71,7 +110,7 @@ async function remove({ event, category, shortcut }) {
 				});
 
 				if (success) {
-					repopulateIcons(database);
+					repopulateIcons({ database, category });
 				}
 			}
 		}
@@ -93,7 +132,7 @@ async function rename({ event, category, shortcut }) {
 				});
 
 				if (success) {
-					repopulateIcons(database);
+					repopulateIcons({ database, category });
 				}
 			}
 		}
@@ -125,7 +164,7 @@ function setupDragAndDrop({ node, database, shortcut, category }) {
 
 		const { success, database: reordered } = await window.electronAPI.reorder({ category, dragId, dropId });
 		if (success) {
-			repopulateIcons(reordered);
+			repopulateIcons({ database: reordered, category });
 		}
 	};
 }
