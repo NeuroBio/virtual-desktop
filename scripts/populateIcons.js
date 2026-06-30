@@ -83,6 +83,7 @@ async function rename({ event, category, shortcut }) {
 	setupInputPrompt({
 		message: `Rename ${shortcut.name} from ${category}:`,
 		label: 'Name',
+		defaultValue: shortcut.name,
 		callBack: async (response, name) => {
 			if (response === 'submit') {
 				const { success, database } = await window.electronAPI.renameShortcut({
@@ -136,9 +137,11 @@ function setupConfirmPrompt({ message, callBack }) {
 	prompt.addEventListener('close', () => callBack(prompt.returnValue));
 }
 
-function setupInputPrompt({ message, label, callBack }) {
+function setupInputPrompt({ message, label, defaultValue, callBack }) {
 	d3.select('#input-text').text(message);
-	const input = d3.select('#input-prompt-input').text(label);
+	d3.select('#input-prompt-label').text(label);
+	const input = d3.select('#input-prompt-input')
+		.attr('value', defaultValue || '');
 	const prompt = d3.select('#input-prompt').node();
 	prompt.showModal();
 	prompt.addEventListener('close', () => callBack(prompt.returnValue, input.property('value')));
