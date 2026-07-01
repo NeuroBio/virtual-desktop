@@ -4,11 +4,13 @@
 /* global launchShortcut */
 /* global removeShortcut */
 /* global renameShortcut */
+/* global moveShortcut */
 /* global setupDragAndDrop */
 /* global toggleAccordion */
 
 
-
+// BE WARY OF THIS VARIABLE
+let categoryNames = [];
 d3.select('body').on('click contextmenu', () => {
 	d3.select('#context-menu').style('display', 'none');
 });
@@ -16,7 +18,8 @@ d3.select('body').on('click contextmenu', () => {
 function populateCategories(database) {
 	console.log(database);
 
-	Object.keys(database).forEach((category) =>
+	categoryNames = Object.keys(database);
+	categoryNames.forEach((category) =>
 		populateCategory({ database, category }));
 }
 
@@ -87,6 +90,8 @@ function populateIcons(database, category) {
 					.on('click', () => removeShortcut({ event, category, shortcut }));
 				d3.select('#rename-shortcut')
 					.on('click', () => renameShortcut({ event, category, shortcut }));
+				d3.select('#move-shortcut')
+					.on('click', () => moveShortcut({ event, oldCategory: category, shortcut }));
 			});
 
 		setupDragAndDrop({

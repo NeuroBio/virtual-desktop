@@ -2,6 +2,8 @@
 /* global repopulateIcons */
 /* global setupConfirmPrompt */
 /* global setupInputPrompt */
+/* global setupSelectPrompt */
+/* global categoryNames */
 
 async function addFileShortcut(category) {
 	const { success, database } = await window.electronAPI.addFileShortcut({ category });
@@ -49,7 +51,7 @@ async function renameShortcut({ event, category, shortcut }) {
 	setupInputPrompt({
 		message: `Rename ${shortcut.alias} from ${category}:`,
 		label: 'Name',
-		defaultValue: shortcut.alias,
+		options: [],
 		callBack: async (response, alias) => {
 			if (response === 'submit') {
 				const { success, database } = await window.electronAPI.renameShortcut({
@@ -60,6 +62,32 @@ async function renameShortcut({ event, category, shortcut }) {
 
 				if (success) {
 					repopulateIcons({ database, category });
+				}
+			}
+		}
+	});
+
+	dismissContextMenu();
+}
+
+async function moveShortcut({ event, oldCategory, shortcut }) {
+	setupSelectPrompt({
+		message: `Move ${shortcut.alias} from ${oldCategory} to:`,
+		options: categoryNames.filter((name) => name !== oldCategory),
+		// label: 'Name',
+		// defaultValue: shortcut.alias,
+		callBack: async (response, newCategory) => {
+			console.log(response, newCategory);
+			if (response === 'submit') {
+				const { success, database } = await window.electronAPI.renameShortcut({
+					newCategory,
+					oldCategory,
+					shortcutId: shortcut.id,
+				});
+
+				if (success) {
+					repopulateIcons({ database, category: oldCategory });
+					repopulateIcons({ database, category: newCategory });
 				}
 			}
 		}

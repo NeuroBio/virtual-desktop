@@ -6,6 +6,7 @@
 	<link href="./css/main.css" rel="stylesheet" />
 	<link href="./css/accordion.css" rel="stylesheet" />
 	<link href="./css/dialog.css" rel="stylesheet" />
+	<link href="./css/select.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -45,10 +46,25 @@
 		</form>
 	</dialog>
 
+	<dialog id="select-prompt">
+		<form method="dialog">
+			<p id="select-text" class="dialog-text"></p>
+			<div class="field">
+				<select id="select-prompt-select">
+				</select>
+			</div>
+			<hr>
+			<div class="dialog-actions">
+				<button value="submit">Submit</button>
+			</div>
+		</form>
+	</dialog>
+
 
 	<ul id="context-menu" class="context-menu" style="display: none;">
 		<li class="context-menu-item" id="rename-shortcut">Rename</li>
 		<li class="context-menu-item" id="remove-shortcut">Remove</li>
+		<li class="context-menu-item" id="move-shortcut">Move</li>
 	</ul>
 
 	<script src="https://d3js.org/d3.v5.min.js"></script>

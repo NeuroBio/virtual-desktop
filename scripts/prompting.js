@@ -22,3 +22,25 @@ function setupInputPrompt({ message, label, defaultValue, callBack }) {
 		{ once: true }
 	);
 }
+
+function setupSelectPrompt({ message, options, callBack }) {
+	d3.select('#select-text').text(message);
+	const select = d3.select('#select-prompt-select')
+		.html('')
+		.on('focus', function () { this.size = options.length; })
+		.on('blur', function () { this.size = 0; })
+		.on('change', function () {
+			this.size = 1;
+			this.blur();
+		});
+	options.forEach(option =>
+		select.append('option')
+			.text(option)
+			.attr('value', option));
+	const prompt = d3.select('#select-prompt').node();
+	prompt.showModal();
+	prompt.addEventListener('close',
+		() => callBack(prompt.returnValue, select.property('value')),
+		{ once: true }
+	);
+}

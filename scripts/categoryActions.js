@@ -1,5 +1,6 @@
 /* global populateCategory */
 /* global setupInputPrompt */
+/* global categoryNames */
 
 async function addCategory() {
 	setupInputPrompt({
@@ -11,6 +12,7 @@ async function addCategory() {
 				const { success, database } = await window.electronAPI.addCategory({ category });
 
 				if (success) {
+					categoryNames.push(category);
 					populateCategory({ database, category });
 				}
 			}
