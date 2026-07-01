@@ -196,7 +196,6 @@ ipcMain.handle('add-category', async (event, data) => {
 
 ipcMain.handle('moveShortcut', async (event, data) => {
 	const { newCategory, oldCategory, shortcutId } = data;
-	console.log(data);
 	try {
 		const database = loadDatabase();
 		const shortcut = database[oldCategory].shortcuts[shortcutId];

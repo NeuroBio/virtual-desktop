@@ -86,6 +86,7 @@ function populateIcons(database, category) {
 					.style('top', `${event.pageY}px`)
 					.style('display', 'block');
 
+				d3.select('#context-menu-name').text(shortcut.name);
 				d3.select('#remove-shortcut')
 					.on('click', () => removeShortcut({ event, category, shortcut }));
 				d3.select('#rename-shortcut')

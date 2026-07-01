@@ -1,0 +1,26 @@
+.context-menu {
+	position: absolute;
+	background-color: rgb(15, 14, 15);
+	padding: 1px;
+	border-radius: 5px;
+	border: 1px solid rgb(15, 14, 15);
+}
+
+.context-menu-item {
+	list-style: none;
+	margin: 0;
+	padding: 5px;
+	cursor: pointer;
+	border-radius: 5px;
+}
+
+.context-menu-item:hover {
+	background-color: rgb(68, 54, 68);
+}
+
+
+#context-menu-name {
+	display: inline-block;
+	max-width: 150px;
+	padding: 3px;
+}
