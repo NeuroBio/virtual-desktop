@@ -73,4 +73,18 @@
 		text-align: left;
 		padding-right: 10px;
 	}
+
+	&.is-open {
+		visibility: visible;
+		padding: .5em;
+		max-height: 400vh;
+		transition: all .25s;
+	}
+
+	&.is-closed {
+		visibility: hidden;
+		padding: 0 .5em;
+		max-height: 0px;
+		transition: all .25s;
+	}
 }

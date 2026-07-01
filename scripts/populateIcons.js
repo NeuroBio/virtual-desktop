@@ -7,6 +7,7 @@
 /* global moveShortcut */
 /* global setupDragAndDrop */
 /* global toggleAccordion */
+/* toggleAccordionTray */
 
 const ellipsesSVG = `
   <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor; pointer-events: none;">
@@ -52,11 +53,13 @@ function populateCategory({ database, category }) {
 		.attr('class', 'add-buttons');
 	headerButtons.append('button')
 		.html(ellipsesSVG)
+		.attr('id', toMoreActionsId(category))
 		.attr('class', 'more-actions')
-		.on('click', () => addFolderShortcut(category));
+		.on('click', () => toggleAccordionTray({ isOpen: false, category }));
 
 	const tray = main.append('div')
-		.attr('class', 'accordion-tray');
+		.attr('id', toAccordionTrayId(category))
+		.attr('class', 'accordion-tray is-closed');
 	tray.append('button')
 		.text('+ File')
 		.on('click', () => addFileShortcut(category));
@@ -79,6 +82,14 @@ function toCategoryId(category) {
 
 function toAccordionHeaderId(category) {
 	return `${category.split(' ').join('_')}-accordion`;
+}
+
+function toAccordionTrayId(category) {
+	return `${category.split(' ').join('_')}-accordion-tray`;
+}
+
+function toMoreActionsId(category) {
+	return `${category.split(' ').join('_')}-more-actions`;
 }
 
 function toAccordionButtonId(category) {

@@ -1,6 +1,8 @@
 /* global d3 */
 /* global toAccordionHeaderId */
 /* global toAccordionButtonId */
+/* global toAccordionTrayId */
+/* global toMoreActionsId */
 
 function toggleAccordion({ isOpen, category }) {
 	d3.select(`#${toAccordionHeaderId(category)}`)
@@ -9,4 +11,13 @@ function toggleAccordion({ isOpen, category }) {
 
 	d3.select(`#${toAccordionButtonId(category)}`)
 		.on('click', () => toggleAccordion({ isOpen: !isOpen, category }));
+}
+
+function toggleAccordionTray({ isOpen, category }) {
+	d3.select(`#${toAccordionTrayId(category)}`)
+		.classed('is-open', !isOpen)
+		.classed('is-closed', isOpen);
+
+	d3.select(`#${toMoreActionsId(category)}`)
+		.on('click', () => toggleAccordionTray({ isOpen: !isOpen, category }));
 }
