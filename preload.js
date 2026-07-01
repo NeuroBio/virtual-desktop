@@ -8,5 +8,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
 	deleteShortcut: (data) => ipcRenderer.invoke('delete-shortcut', data),
 	reorder: (data) => ipcRenderer.invoke('reorder', data),
 	renameShortcut: (data) => ipcRenderer.invoke('rename-shortcut', data),
+	moveShortcut: (data) => ipcRenderer.invoke('moveShortcut', data),
 	addCategory: (data) => ipcRenderer.invoke('add-category', data),
 });

@@ -194,6 +194,25 @@ ipcMain.handle('add-category', async (event, data) => {
 	}
 });
 
+ipcMain.handle('moveShortcut', async (event, data) => {
+	const { newCategory, oldCategory, shortcutId } = data;
+	console.log(data);
+	try {
+		const database = loadDatabase();
+		const shortcut = database[oldCategory].shortcuts[shortcutId];
+		delete database[oldCategory].shortcuts[shortcutId];
+		shortcut.position = database[newCategory].shortcuts.length;
+		database[newCategory].shortcuts[shortcutId] = shortcut;
+
+		saveDataBase(database);
+		readyForUi(database);
+		return { success: true, database };
+	} catch (error) {
+		console.error("Failed to move shortcut:", error);
+		return { success: false };
+	}
+});
+
 
 function loadDatabase() {
 	const rawData = fs.readFileSync(databasePath, 'utf-8');

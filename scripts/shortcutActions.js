@@ -74,12 +74,9 @@ async function moveShortcut({ event, oldCategory, shortcut }) {
 	setupSelectPrompt({
 		message: `Move ${shortcut.alias} from ${oldCategory} to:`,
 		options: categoryNames.filter((name) => name !== oldCategory),
-		// label: 'Name',
-		// defaultValue: shortcut.alias,
 		callBack: async (response, newCategory) => {
-			console.log(response, newCategory);
 			if (response === 'submit') {
-				const { success, database } = await window.electronAPI.renameShortcut({
+				const { success, database } = await window.electronAPI.moveShortcut({
 					newCategory,
 					oldCategory,
 					shortcutId: shortcut.id,
