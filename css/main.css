@@ -54,6 +54,10 @@ button {
 	padding: 5px;
 	border-radius: 5px;
 	cursor: pointer;
+
+	&:hover {
+		background-color: rgb(112, 89, 112);
+	}
 }
 
 .shortcut-container {

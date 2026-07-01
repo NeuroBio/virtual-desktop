@@ -1,5 +1,6 @@
 .accordion {
-	overflow: hidden;
+	position: relative;
+	/* overflow: hidden; */
 	margin-bottom: 3px;
 
 	&.is-open {
@@ -54,4 +55,22 @@
 	width: 25px;
 	margin-right: 5px;
 	border: 0;
+}
+
+.accordion-tray {
+	z-index: 40;
+	top: 36px;
+	right: 0;
+	position: absolute;
+	display: inline-flex;
+	flex-direction: column;
+	row-gap: 2px;
+	background-color: rgb(15, 14, 15);
+	padding: 3px 5px 5px 5px;
+	border-radius: 0 0 5px 5px;
+
+	button {
+		text-align: left;
+		padding-right: 10px;
+	}
 }

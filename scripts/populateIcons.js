@@ -51,14 +51,17 @@ function populateCategory({ database, category }) {
 	const headerButtons = header.append('div')
 		.attr('class', 'add-buttons');
 	headerButtons.append('button')
-		.text('+ File')
-		.on('click', () => addFileShortcut(category));
-	headerButtons.append('button')
-		.text('+ Folder')
-		.on('click', () => addFolderShortcut(category));
-	headerButtons.append('button')
 		.html(ellipsesSVG)
 		.attr('class', 'more-actions')
+		.on('click', () => addFolderShortcut(category));
+
+	const tray = main.append('div')
+		.attr('class', 'accordion-tray');
+	tray.append('button')
+		.text('+ File')
+		.on('click', () => addFileShortcut(category));
+	tray.append('button')
+		.text('+ Folder')
 		.on('click', () => addFolderShortcut(category));
 
 	main.append('div')
