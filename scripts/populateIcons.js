@@ -8,8 +8,15 @@
 /* global setupDragAndDrop */
 /* global toggleAccordion */
 
+const ellipsesSVG = `
+  <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor; pointer-events: none;">
+    <circle cx="5" cy="12" r="2" />
+    <circle cx="12" cy="12" r="2" />
+    <circle cx="19" cy="12" r="2" />
+  </svg>
+`;
 
-// BE WARY OF THIS VARIABLE
+// BE WARY OF CHANGING THIS VARIABLE
 let categoryNames = [];
 d3.select('body').on('click contextmenu', () => {
 	d3.select('#context-menu').style('display', 'none');
@@ -46,9 +53,12 @@ function populateCategory({ database, category }) {
 	headerButtons.append('button')
 		.text('+ File')
 		.on('click', () => addFileShortcut(category));
-
 	headerButtons.append('button')
 		.text('+ Folder')
+		.on('click', () => addFolderShortcut(category));
+	headerButtons.append('button')
+		.html(ellipsesSVG)
+		.attr('class', 'more-actions')
 		.on('click', () => addFolderShortcut(category));
 
 	main.append('div')

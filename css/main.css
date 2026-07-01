@@ -92,6 +92,12 @@ img {
 	text-align: center;
 }
 
+.more-actions {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 hr {
 	border: none;
 	height: 2px;
