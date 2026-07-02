@@ -86,24 +86,31 @@ function populateCategory({ database, category }) {
 	populateIcons(database, category);
 }
 
+function sanitize(category) {
+	return category
+		.split(' ')
+		.join('_')
+		.replace('.', '');
+}
+
 function toCategoryId(category) {
-	return `${category.split(' ').join('_')}-shortcuts`;
+	return `${sanitize(category)}-shortcuts`;
 }
 
 function toAccordionHeaderId(category) {
-	return `${category.split(' ').join('_')}-accordion`;
+	return `${sanitize(category)}-accordion`;
 }
 
 function toAccordionTrayId(category) {
-	return `${category.split(' ').join('_')}-accordion-tray`;
+	return `${sanitize(category)}-accordion-tray`;
 }
 
 function toMoreActionsId(category) {
-	return `${category.split(' ').join('_')}-more-actions`;
+	return `${sanitize(category)}-more-actions`;
 }
 
 function toAccordionButtonId(category) {
-	return `${category.split(' ').join('_')}-button`;
+	return `${sanitize(category)}-button`;
 }
 
 function populateIcons(database, category) {

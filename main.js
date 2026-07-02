@@ -175,13 +175,13 @@ ipcMain.handle('rename-shortcut', async (event, data) => {
 });
 
 ipcMain.handle('add-category', async (event, data) => {
-	const { category } = data;
+	const { name, defaultOpen } = data;
 	try {
 		const database = loadDatabase();
 
-		database[category] = {
-			name: category,
-			defaultOpen: false,
+		database[name] = {
+			name,
+			defaultOpen,
 			position: Object.keys(database).length,
 			shortcuts: {},
 		};
