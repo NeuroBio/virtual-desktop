@@ -11,4 +11,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
 	moveShortcut: (data) => ipcRenderer.invoke('moveShortcut', data),
 	addCategory: (data) => ipcRenderer.invoke('add-category', data),
 	updateCategorySettings: (data) => ipcRenderer.invoke('update-category-settings', data),
+	constants: () => ipcRenderer.sendSync('constants'),
 });

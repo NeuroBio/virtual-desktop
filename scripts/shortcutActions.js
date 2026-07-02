@@ -5,6 +5,8 @@
 /* global setupSelectPrompt */
 /* global categoryNames */
 
+
+console.log((window.electronAPI.constants()));
 async function addFileShortcut(category) {
 	const { success, database } = await window.electronAPI.addFileShortcut({ category });
 
@@ -22,7 +24,7 @@ async function addFolderShortcut(category) {
 }
 
 async function launchShortcut(path) {
-	const result = await window.electronAPI.launch(path);
+	const result = await window.electronAPI.launchShortcut(path);
 	if (!result.success) {
 		console.error(`Could not launch asset: ${result.error}`);
 	}

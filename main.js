@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog, screen, shell } = require('electron');
 const fs = require('fs');
 const path = require('path');
+const ShortcutStrategy = require('./consts/ShortcutStrategy.js');
 const AutoLaunch = require('auto-launch');
 let databasePath = '';
 const iconCache = {};
@@ -51,6 +52,10 @@ app.whenReady().then(() => {
 // Closes the app completely when you close the window
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') app.quit();
+});
+
+ipcMain.on('constants', (event) => {
+	event.returnValue = { ShortcutStrategy };
 });
 
 ipcMain.handle('add-file-shortcut', async (event, data) => {
