@@ -2,6 +2,8 @@
 /* global setupInputPrompt */
 /* global categoryNames */
 /* global setupCategorySettingsPrompt */
+/* global populateCategories */
+/* global clearView */
 
 async function addCategory() {
 	setupInputPrompt({
@@ -28,10 +30,14 @@ async function updateCategorySettings(category) {
 		callBack: async (response, formData) => {
 			console.log(formData);
 			if (response === 'submit') {
-				const { success, database } = await window.electronAPI.updateCategorySettings(formData);
+				const { success, database } = await window.electronAPI.updateCategorySettings({
+					oldName: category.name,
+					...formData,
+				});
 
 				if (success) {
-					populateCategory({ database, category: database[formData.name] });
+					clearView();
+					populateCategories(database);
 				}
 			}
 		}

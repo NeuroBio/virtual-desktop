@@ -195,6 +195,26 @@ ipcMain.handle('add-category', async (event, data) => {
 	}
 });
 
+ipcMain.handle('update-category-settings', async (event, data) => {
+	const { oldName, name, defaultOpen } = data;
+	try {
+		const database = loadDatabase();
+
+		const category = database[oldName];
+		delete database[oldName];
+		category.name = name;
+		category.defaultOpen = defaultOpen;
+		database[name] = category;
+
+		saveDataBase(database);
+		readyForUi(database);
+		return { success: true, database };
+	} catch (error) {
+		console.error("Failed to update category settings:", error);
+		return { success: false };
+	}
+});
+
 ipcMain.handle('moveShortcut', async (event, data) => {
 	const { newCategory, oldCategory, shortcutId } = data;
 	try {

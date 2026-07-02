@@ -32,8 +32,14 @@ function populateCategories(database) {
 		populateCategory({ database, category }));
 }
 
+function clearView() {
+	d3.select('#categories').html('');
+}
+
 function populateCategory({ database, category }) {
-	const isOpen = category.defaultOpen;
+	const categoryData = database[category];
+	const isOpen = categoryData.defaultOpen;
+
 	const main = d3.select('#categories')
 		.append('section')
 		.attr('id', toAccordionHeaderId(category))
@@ -69,7 +75,7 @@ function populateCategory({ database, category }) {
 		.on('click', () => addFolderShortcut(category));
 	tray.append('li')
 		.text('Settings')
-		.on('click', () => updateCategorySettings(database[category]));
+		.on('click', () => updateCategorySettings(categoryData));
 
 	main.append('div')
 		.attr('class', 'accordion-body')
