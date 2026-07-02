@@ -48,10 +48,11 @@ async function removeShortcut({ event, category, shortcut }) {
 }
 
 async function renameShortcut({ event, category, shortcut }) {
+	console.log(shortcut);
 	setupInputPrompt({
 		message: `Rename ${shortcut.alias} from ${category}:`,
 		label: 'Name',
-		options: [],
+		defaultValue: shortcut.alias,
 		callBack: async (response, alias) => {
 			if (response === 'submit') {
 				const { success, database } = await window.electronAPI.renameShortcut({
