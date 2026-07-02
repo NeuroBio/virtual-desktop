@@ -44,3 +44,20 @@ function setupSelectPrompt({ message, options, callBack }) {
 		{ once: true }
 	);
 }
+
+function setupCategorySettingsPrompt({ category, message, callBack }) {
+	d3.select('#category-settings-text').text(message);
+	const input = d3.select('#category-settings-input')
+		.property('value', category?.name || '');
+	const checkbox = d3.select('#category-settings-checkbox')
+		.property('checked', category?.defaultOpen || false);
+	const prompt = d3.select('#category-settings-prompt').node();
+	prompt.showModal();
+	prompt.addEventListener('close',
+		() => callBack(prompt.returnValue, {
+			name: input.property('value'),
+			defaultOpen: checkbox.property('checked'),
+		}),
+		{ once: true }
+	);
+}

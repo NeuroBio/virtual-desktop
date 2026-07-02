@@ -8,6 +8,7 @@
 /* global setupDragAndDrop */
 /* global toggleAccordion */
 /* global toggleAccordionTray */
+/* global updateCategorySettings */
 
 const ellipsesSVG = `
   <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor; pointer-events: none;">
@@ -66,6 +67,9 @@ function populateCategory({ database, category }) {
 	tray.append('li')
 		.text('+ Folder')
 		.on('click', () => addFolderShortcut(category));
+	tray.append('li')
+		.text('Settings')
+		.on('click', () => updateCategorySettings(database[category]));
 
 	main.append('div')
 		.attr('class', 'accordion-body')

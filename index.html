@@ -61,6 +61,25 @@
 		</form>
 	</dialog>
 
+	<dialog id="category-settings-prompt">
+		<form method="dialog">
+			<p id="category-settings-text" class="dialog-text"></p>
+			<div class="field">
+				<label id="category-settings-input-label" for="category-settings-input">Name</label>
+				<input type="text" id="category-settings-input" name="input" required>
+			</div>
+			<div class="checkbox-field">
+				<label id="category-settings-checkbox-label" for="category-settings-checkbox">Default Open</label>
+				<input type="checkbox" id="category-settings-checkbox">
+			</div>
+
+			<hr>
+			<div class="dialog-actions">
+				<button value="submit">Submit</button>
+			</div>
+		</form>
+	</dialog>
+
 
 	<ul id="context-menu" class="context-menu" style="display: none;">
 		<span id="context-menu-name"></span>
