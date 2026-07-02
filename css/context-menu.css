@@ -1,9 +1,13 @@
 .context-menu {
+	display: flex;
+	flex-direction: column;
+	row-gap: 2px;
 	position: absolute;
 	background-color: rgb(15, 14, 15);
 	padding: 1px;
 	border-radius: 5px;
 	border: 1px solid rgb(15, 14, 15);
+	z-index: 50;
 }
 
 .context-menu-item {
@@ -12,15 +16,19 @@
 	padding: 5px;
 	cursor: pointer;
 	border-radius: 5px;
+	background-color: rgb(68, 54, 68);
+
+	&:hover {
+		background-color: rgb(112, 89, 112);
+	}
 }
 
-.context-menu-item:hover {
-	background-color: rgb(68, 54, 68);
-}
 
 
 #context-menu-name {
 	display: inline-block;
 	max-width: 150px;
 	padding: 3px;
+	border-bottom: 1px solid rgb(85, 26, 80);
+	margin-bottom: 5px;
 }

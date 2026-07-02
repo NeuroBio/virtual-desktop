@@ -7,7 +7,7 @@
 /* global moveShortcut */
 /* global setupDragAndDrop */
 /* global toggleAccordion */
-/* toggleAccordionTray */
+/* global toggleAccordionTray */
 
 const ellipsesSVG = `
   <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor; pointer-events: none;">
@@ -57,13 +57,13 @@ function populateCategory({ database, category }) {
 		.attr('class', 'more-actions')
 		.on('click', () => toggleAccordionTray({ isOpen: false, category }));
 
-	const tray = main.append('div')
+	const tray = main.append('ul')
 		.attr('id', toAccordionTrayId(category))
 		.attr('class', 'accordion-tray is-closed');
-	tray.append('button')
+	tray.append('li')
 		.text('+ File')
 		.on('click', () => addFileShortcut(category));
-	tray.append('button')
+	tray.append('li')
 		.text('+ Folder')
 		.on('click', () => addFolderShortcut(category));
 
@@ -108,7 +108,7 @@ function populateIcons(database, category) {
 				d3.select('#context-menu')
 					.style('left', `${event.pageX}px`)
 					.style('top', `${event.pageY}px`)
-					.style('display', 'block');
+					.style('display', 'flex');
 
 				d3.select('#context-menu-name').text(shortcut.name);
 				d3.select('#remove-shortcut')
