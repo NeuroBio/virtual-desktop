@@ -256,12 +256,13 @@ ipcMain.handle('get-icon', async (event, data) => {
 });
 
 ipcMain.handle('modify-icon', async (event, data) => {
-	const { category, shortcutId, iconStrategy } = data;
+	const { category, shortcutId, iconStrategy, iconPath } = data;
 	try {
 		const database = loadDatabase();
 
 		const shortcut = database[category].shortcuts[shortcutId];
 		shortcut.iconStrategy = iconStrategy;
+		shortcut.iconPath = iconStrategy === IconStrategy.CUSTOM ? iconPath : '';
 
 		saveDataBase(database);
 
