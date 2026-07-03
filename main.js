@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, screen, shell, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, screen, shell, nativeImage, Menu } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const IconStrategy = require('./consts/IconStrategy.js');
@@ -245,9 +245,14 @@ ipcMain.handle('moveShortcut', async (event, data) => {
 ipcMain.handle('get-icon', async (event, data) => {
 	const { shortcut, iconStrategy } = data;
 	try {
+		const icon = await getIcon({ ...shortcut, iconStrategy });
+		console.log({
+			shortcut,
+			icon, iconStrategy
+		});
 		return {
 			success: true,
-			icon: await getIcon({ ...shortcut, iconStrategy }),
+			icon,
 		};
 	} catch (error) {
 		console.error("Failed to get icon:", error);
@@ -354,9 +359,13 @@ async function getIcon({ isFile, path, iconStrategy, iconPath }) {
 			case IconStrategy.CUSTOM: {
 				return iconPath;
 			}
+			case IconStrategy.PDF: {
+				return nativeImage.createThumbnailFromPath(path, { width: 48, height: 48 })
+					.then(thumbnail => thumbnail.toDataURL());
+			}
 		}
-	} catch (iconError) {
-		console.error(`Failed to get icon for: ${path}`, iconError);
+	} catch (error) {
+		console.error(`Failed to get icon for: ${path}`, error);
 		const nativeIcon = await app.getFileIcon('', { size: 'large' });
 		return nativeIcon.toDataURL();
 	}
