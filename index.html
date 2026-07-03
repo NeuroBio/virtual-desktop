@@ -2,8 +2,7 @@
 <html>
 
 <head>
-	<meta http-equiv="Content-Security-Policy"
-		content="default-src 'self' 'unsafe-inline' data: ; script-src 'self' https://d3js.org;">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: ; script-src 'self' https://d3js.org;">
 	<title>Virtual Desktop</title>
 	<link href="./css/main.css" rel="stylesheet" />
 	<link href="./css/accordion.css" rel="stylesheet" />
@@ -19,7 +18,7 @@
 		</div>
 
 		<footer>
-			<button onClick="addCategory()">+ Category</button>
+			<button id="add-category">+ Category</button>
 		</footer>
 	</div>
 
@@ -101,7 +100,7 @@
 	</dialog>
 
 
-	<ul id="context-menu" class="context-menu" style="display: none;">
+	<ul id="context-menu" class="context-menu">
 		<span id="context-menu-name"></span>
 		<li class="context-menu-item" id="rename-shortcut">Rename</li>
 		<li class="context-menu-item" id="modify-icon">Modify Icon</li>

@@ -117,3 +117,10 @@ footer {
 	padding: 5px;
 	background-color: rgb(15, 14, 15);
 }
+
+.ellipses {
+	width: 16px;
+	height: 16px;
+	fill: currentColor;
+	pointer-events: none;
+}

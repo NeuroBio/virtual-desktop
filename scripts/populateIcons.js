@@ -15,9 +15,10 @@
 /* global toggleAccordionTray */
 /* global updateCategorySettings */
 /* global deleteCategory */
+/* global addCategory */
 
 const ellipsesSVG = `
-  <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor; pointer-events: none;">
+  <svg viewBox="0 0 24 24" class="ellipses">
     <circle cx="5" cy="12" r="2" />
     <circle cx="12" cy="12" r="2" />
     <circle cx="19" cy="12" r="2" />
@@ -26,9 +27,9 @@ const ellipsesSVG = `
 
 // BE WARY OF CHANGING THIS VARIABLE
 let categoryNames = [];
-d3.select('body').on('click contextmenu', () => {
-	d3.select('#context-menu').style('display', 'none');
-});
+dismissContextMenu();
+d3.select('body').on('click contextmenu', () => dismissContextMenu());
+d3.select(`#add-category`).on('click', () => addCategory());
 
 function populateCategories(database) {
 	console.log(database);
@@ -229,4 +230,8 @@ function calculateContextPosition({ menu, event }) {
 function repopulateIcons({ database, category }) {
 	d3.select(`#${toCategoryId(category)}`).html(''); // should be #categories
 	populateIcons(database, category);
+}
+
+function dismissContextMenu() {
+	d3.select('#context-menu').style('display', 'none');
 }

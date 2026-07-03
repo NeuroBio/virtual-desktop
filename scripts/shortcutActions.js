@@ -1,12 +1,11 @@
-/* global d3 */
 /* global repopulateIcons */
 /* global setupConfirmPrompt */
 /* global setupInputPrompt */
 /* global setupSelectPrompt */
 /* global categoryNames */
 /* global setupIconPrompt */
-/* global toShortcutNameId */
 /* global repopulateIcon */
+/* global dismissContextMenu */
 
 async function addFileShortcut(category) {
 	const { success, database } = await window.electronAPI.addFileShortcut({ category });
@@ -118,6 +117,3 @@ async function modifyIcon({ event, category, shortcut }) {
 	dismissContextMenu();
 }
 
-function dismissContextMenu() {
-	d3.select('#context-menu').style('display', 'none');
-}
