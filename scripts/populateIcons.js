@@ -171,11 +171,11 @@ function populateIcon(entry, shortcut, category, database) {
 			event.preventDefault();
 			event.stopPropagation();
 			const menu = d3.select('#context-menu');
+			menu.style('display', 'flex');
 			const { leftPos, topPos } = calculateContextPosition({ menu, event });
 
 			menu.style('left', `${leftPos}px`)
-				.style('top', `${topPos}px`)
-				.style('display', 'flex');
+				.style('top', `${topPos}px`);
 
 			d3.select('#context-menu-name').text(shortcut.name);
 			d3.select('#remove-shortcut')
