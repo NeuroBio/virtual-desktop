@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: ; script-src 'self' https://d3js.org;">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: ; script-src 'self'">
 	<title>Virtual Desktop</title>
 	<link href="./css/main.css" rel="stylesheet" />
 	<link href="./css/accordion.css" rel="stylesheet" />
@@ -108,7 +108,8 @@
 		<li class="context-menu-item" id="move-shortcut">Move</li>
 	</ul>
 
-	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+	<script src="./thirdParty/d3.v5.min.js"></script>
 	<script src="./scripts/populateIcons.js"></script>
 	<script src="./scripts/init.js"></script>
 	<script src="./scripts/shortcutActions.js"></script>
