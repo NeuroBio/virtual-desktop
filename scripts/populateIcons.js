@@ -33,22 +33,27 @@ function populateCategories(database) {
 	console.log(database);
 
 	categoryNames = Object.keys(database);
-	categoryNames.forEach((category) =>
-		populateCategory({ database, category }));
+	categoryNames.forEach((category) => createCategory({ category, database }));
+
 }
 
 function clearView() {
 	d3.select('#categories').html('');
 }
 
-function populateCategory({ database, category }) {
+function createCategory({ category, database }) {
+	const container = d3.select('#categories');
+	const main = container
+		.append('section')
+		.attr('id', toAccordionHeaderId(category));
+	populateCategory({ main, database, category });
+}
+
+function populateCategory({ main, database, category }) {
 	const categoryData = database[category];
 	const isOpen = categoryData.defaultOpen;
 
-	const main = d3.select('#categories')
-		.append('section')
-		.attr('id', toAccordionHeaderId(category))
-		.classed('accordion', true)
+	main.classed('accordion', true)
 		.classed('is-open', isOpen)
 		.classed('is-closed', !isOpen);
 	const header = main.append('h2')
@@ -89,6 +94,11 @@ function populateCategory({ database, category }) {
 		.attr('id', `${toCategoryId(category)}`);
 
 	populateIcons(database, category);
+}
+
+function repopulateCategory({ database, category }) {
+	const main = d3.select(`#${toAccordionHeaderId(category)}`).html('');
+	populateCategory({ main, database, category });
 }
 
 function sanitize(category) {

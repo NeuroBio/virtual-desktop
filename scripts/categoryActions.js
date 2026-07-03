@@ -1,5 +1,4 @@
-/* global populateCategory */
-/* global setupInputPrompt */
+/* global createCategory */
 /* global categoryNames */
 /* global setupCategorySettingsPrompt */
 /* global populateCategories */
@@ -15,7 +14,7 @@ async function addCategory() {
 				if (success) {
 					const category = formData.name;
 					categoryNames.push(category);
-					populateCategory({ database, category });
+					createCategory({ database, category });
 				}
 			}
 		}
