@@ -316,6 +316,7 @@ function addToDatabase({ database, category, path, isFile }) {
 		alias: name,
 		position: Object.keys(database[category].shortcuts).length,
 		iconStrategy: looksLikeSteam ? IconStrategy.STEAM : IconStrategy.STANDARD,
+		iconPath: '',
 	};
 	saveDataBase(database);
 }

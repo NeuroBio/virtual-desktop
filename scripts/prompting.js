@@ -61,13 +61,16 @@ function setupCategorySettingsPrompt({ category, message, callBack }) {
 		{ once: true }
 	);
 }
-
-const iconOptions = Object.values(window.electronAPI.constants().IconStrategy);
+const IconStrategy = window.electronAPI.constants().IconStrategy;
+const iconOptions = Object.values(IconStrategy);
 function setupIconPrompt({ category, shortcut, callBack }) {
-	d3.select('#icon-prompt-text').text(`Update Icon for ${shortcut.name} in ${category}`);
+	let iconPath = shortcut.iconPath;
+	const customIconInput = d3.select('#icon-prompt-custom-input');
+	const previewIcon = d3.select('#icon-prompt-preview');
 
-	const previewIcon = d3.select('#icon-prompt-preview')
-		.attr('src', shortcut.icon);
+	d3.select('#icon-prompt-text').text(`Update Icon for ${shortcut.alias} in ${category}`);
+
+	previewIcon.attr('src', shortcut.icon);
 	const select = d3.select('#icon-prompt-select')
 		.html('')
 		.on('focus', function () { this.size = iconOptions.length; })
@@ -76,19 +79,55 @@ function setupIconPrompt({ category, shortcut, callBack }) {
 			const iconStrategy = d3.select(this).property('value');
 			this.size = 1;
 			this.blur();
+			showOrHideCustom({ iconStrategy, customIconInput });
 
-			const response = await window.electronAPI.getIcon({ shortcut, iconStrategy });
-			previewIcon.attr('src', response.icon);
+			await updateIcon({ shortcut, iconPath, iconStrategy, previewIcon });
 		});
+	customIconInput.on('change', async () => {
+		const event = d3.event;
+		iconPath = await fileToBase64(event);
+		updateIcon({
+			shortcut: {},
+			iconPath,
+			iconStrategy: IconStrategy.CUSTOM,
+			previewIcon,
+		});
+	});
 	iconOptions.forEach(option =>
 		select.append('option')
 			.text(option)
 			.attr('value', option));
+	select.property('value', shortcut.iconStrategy);
+	showOrHideCustom({ iconStrategy: shortcut.iconStrategy, customIconInput });
 	const prompt = d3.select('#icon-prompt').node();
+
 	prompt.showModal();
+	document.getElementById('icon-prompt-uploader').value = '';
+
 	prompt.addEventListener('close',
-		() => callBack(prompt.returnValue, { iconStrategy: select.property('value') }),
+		() => callBack(prompt.returnValue, {
+			iconStrategy: select.property('value'),
+			iconPath,
+		}),
 		{ once: true }
 	);
+}
 
+function fileToBase64(event) {
+	const file = event.target.files[0];
+	return new Promise((resolve) => {
+		const reader = new FileReader();
+		reader.onload = e => resolve(e.target.result);
+		reader.readAsDataURL(file);
+	});
+}
+
+function showOrHideCustom({ iconStrategy, customIconInput }) {
+	customIconInput.classed('show-custom', iconStrategy === IconStrategy.CUSTOM);
+}
+
+async function updateIcon({ shortcut, iconPath, iconStrategy, previewIcon }) {
+	const relay = { ...shortcut, iconPath };
+	const { icon } = await window.electronAPI.getIcon({ shortcut: relay, iconStrategy });
+	previewIcon.attr('src', icon);
 }
