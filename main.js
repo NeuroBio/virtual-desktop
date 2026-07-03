@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, screen, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, screen, shell, Menu } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const IconStrategy = require('./consts/IconStrategy.js');
@@ -32,6 +32,7 @@ const appLauncher = new AutoLaunch({
 
 // Launches the window once Electron is ready
 app.whenReady().then(() => {
+	Menu.setApplicationMenu(null);
 	databasePath = path.join(app.getPath('userData'), 'shortcuts.json');
 
 	if (!fs.existsSync(databasePath)) {
