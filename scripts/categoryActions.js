@@ -3,6 +3,8 @@
 /* global setupCategorySettingsPrompt */
 /* global populateCategories */
 /* global clearView */
+/* global setupConfirmPrompt */
+/* global removeCategory */
 
 async function addCategory() {
 	setupCategorySettingsPrompt({
@@ -35,6 +37,21 @@ async function updateCategorySettings(category) {
 				if (success) {
 					clearView();
 					populateCategories(database);
+				}
+			}
+		}
+	});
+}
+
+async function deleteCategory(category) {
+	setupConfirmPrompt({
+		message: `Remove ${category.name}?`,
+		callBack: async (response) => {
+			if (response === 'submit') {
+				const { success } = await window.electronAPI.deleteCategory({ category: category.name });
+
+				if (success) {
+					removeCategory(category);
 				}
 			}
 		}

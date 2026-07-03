@@ -275,6 +275,21 @@ ipcMain.handle('modify-icon', async (event, data) => {
 	}
 });
 
+ipcMain.handle('delete-category', async (event, data) => {
+	const { category } = data;
+	try {
+		const database = loadDatabase();
+		delete database[category];
+
+		saveDataBase(database);
+		await readyForUi(database);
+		return { success: true, database };
+	} catch (error) {
+		console.error("Failed to update category settings:", error);
+		return { success: false };
+	}
+});
+
 
 function loadDatabase() {
 	const rawData = fs.readFileSync(databasePath, 'utf-8');

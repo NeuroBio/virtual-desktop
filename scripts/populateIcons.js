@@ -14,6 +14,7 @@
 /* global toggleAccordion */
 /* global toggleAccordionTray */
 /* global updateCategorySettings */
+/* global deleteCategory */
 
 const ellipsesSVG = `
   <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor; pointer-events: none;">
@@ -86,6 +87,9 @@ function populateCategory({ main, database, category }) {
 	tray.append('li')
 		.text('Settings')
 		.on('click', () => updateCategorySettings(categoryData));
+	tray.append('li')
+		.text('Delete')
+		.on('click', () => deleteCategory(categoryData));
 
 	main.append('div')
 		.attr('class', 'accordion-body')
@@ -99,6 +103,10 @@ function populateCategory({ main, database, category }) {
 function repopulateCategory({ database, category }) {
 	const main = d3.select(`#${toAccordionHeaderId(category)}`).html('');
 	populateCategory({ main, database, category });
+}
+
+function removeCategory(category) {
+	d3.select(`#${toAccordionHeaderId(category.name)}`).remove();
 }
 
 function sanitize(category) {

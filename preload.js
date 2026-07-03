@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 	updateCategorySettings: (data) => ipcRenderer.invoke('update-category-settings', data),
 	getIcon: (data) => ipcRenderer.invoke('get-icon', data),
 	modifyIcon: (data) => ipcRenderer.invoke('modify-icon', data),
+	deleteCategory: (data) => ipcRenderer.invoke('delete-category', data),
 
 	// sync
 	constants: () => ipcRenderer.sendSync('constants'),
