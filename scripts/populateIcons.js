@@ -169,9 +169,11 @@ function populateIcon(entry, shortcut, category, database) {
 			const event = d3.event;
 			event.preventDefault();
 			event.stopPropagation();
-			d3.select('#context-menu')
-				.style('left', `${event.pageX}px`)
-				.style('top', `${event.pageY}px`)
+			const menu = d3.select('#context-menu');
+			const { leftPos, topPos } = calculateContextPosition({ menu, event });
+
+			menu.style('left', `${leftPos}px`)
+				.style('top', `${topPos}px`)
 				.style('display', 'flex');
 
 			d3.select('#context-menu-name').text(shortcut.name);
@@ -201,6 +203,27 @@ function populateIcon(entry, shortcut, category, database) {
 		.attr('class', 'icon-name')
 		.attr('id', toShortcutNameId(shortcut.id))
 		.text(shortcut.alias);
+}
+
+function calculateContextPosition({ menu, event }) {
+	const menuNode = menu.node();
+	const menuWidth = menuNode.offsetWidth;
+	const menuHeight = menuNode.offsetHeight;
+
+	const windowWidth = window.innerWidth;
+	const windowHeight = window.innerHeight;
+
+	let leftPos = event.pageX;
+	if (event.clientX + menuWidth > windowWidth) {
+		leftPos = event.pageX - menuWidth;
+	}
+
+	let topPos = event.pageY;
+	if (event.clientY + menuHeight > windowHeight) {
+		topPos = event.pageY - menuHeight;
+	}
+
+	return { leftPos, topPos };
 }
 
 function repopulateIcons({ database, category }) {
