@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog, screen, shell } = require('electron');
 const fs = require('fs');
 const path = require('path');
-const ShortcutStrategy = require('./consts/ShortcutStrategy.js');
+const IconStrategy = require('./consts/IconStrategy.js');
 const AutoLaunch = require('auto-launch');
 let databasePath = '';
 const iconCache = {};
@@ -55,7 +55,7 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.on('constants', (event) => {
-	event.returnValue = { ShortcutStrategy };
+	event.returnValue = { IconStrategy };
 });
 
 ipcMain.handle('add-file-shortcut', async (event, data) => {
@@ -67,6 +67,7 @@ ipcMain.handle('add-file-shortcut', async (event, data) => {
 	}
 	const filePath = result.filePaths[0];
 	const database = loadDatabase();
+
 	addToDatabase({
 		database,
 		category,
@@ -156,7 +157,7 @@ ipcMain.handle('reorder', async (event, data) => {
 		}, {});
 
 		saveDataBase(database);
-		readyForUi(database);
+		await readyForUi(database);
 		return { success: true, database };
 	} catch (error) {
 		console.error("Failed to save sort order:", error);
@@ -168,11 +169,12 @@ ipcMain.handle('rename-shortcut', async (event, data) => {
 	const { category, shortcutId, alias } = data;
 	try {
 		const database = loadDatabase();
-		database[category].shortcuts[shortcutId].alias = alias;
+		const shortcut = database[category].shortcuts[shortcutId];
+		shortcut.alias = alias;
 
 		saveDataBase(database);
-		readyForUi(database);
-		return { success: true, database };
+		await readyForUi(database);
+		return { success: true, shortcut, database };
 	} catch (error) {
 		console.error("Failed to update name:", error);
 		return { success: false };
@@ -192,7 +194,7 @@ ipcMain.handle('add-category', async (event, data) => {
 		};
 
 		saveDataBase(database);
-		readyForUi(database);
+		await readyForUi(database);
 		return { success: true, database };
 	} catch (error) {
 		console.error("Failed to add new category:", error);
@@ -212,7 +214,7 @@ ipcMain.handle('update-category-settings', async (event, data) => {
 		database[name] = category;
 
 		saveDataBase(database);
-		readyForUi(database);
+		await readyForUi(database);
 		return { success: true, database };
 	} catch (error) {
 		console.error("Failed to update category settings:", error);
@@ -230,10 +232,45 @@ ipcMain.handle('moveShortcut', async (event, data) => {
 		database[newCategory].shortcuts[shortcutId] = shortcut;
 
 		saveDataBase(database);
-		readyForUi(database);
+		await readyForUi(database);
 		return { success: true, database };
 	} catch (error) {
 		console.error("Failed to move shortcut:", error);
+		return { success: false };
+	}
+});
+
+ipcMain.handle('get-icon', async (event, data) => {
+	const { shortcut, iconStrategy } = data;
+	try {
+		return {
+			success: true,
+			icon: await getIcon({ ...shortcut, iconStrategy }),
+		};
+	} catch (error) {
+		console.error("Failed to get icon:", error);
+		return { success: false };
+	}
+});
+
+ipcMain.handle('modify-icon', async (event, data) => {
+	const { category, shortcutId, iconStrategy } = data;
+	try {
+		const database = loadDatabase();
+
+		const shortcut = database[category].shortcuts[shortcutId];
+		shortcut.iconStrategy = iconStrategy;
+
+		saveDataBase(database);
+
+		delete iconCache[shortcutId];
+		shortcut.icon = await getIcon(shortcut);
+
+		await readyForUi(database);
+		return { success: true, shortcut, database };
+
+	} catch (error) {
+		console.error("Failed to get icon:", error);
 		return { success: false };
 	}
 });
@@ -252,6 +289,8 @@ function addToDatabase({ database, category, path, isFile }) {
 	database[category] ??= { shortcuts: {} };
 	const id = Date.now().toString();
 	const name = getShortcutName(path);
+	const looksLikeSteam = isFile && path.toLowerCase().endsWith('.url');
+
 	database[category].shortcuts[id] = {
 		id,
 		path,
@@ -259,6 +298,7 @@ function addToDatabase({ database, category, path, isFile }) {
 		name,
 		alias: name,
 		position: Object.keys(database[category].shortcuts).length,
+		iconStrategy: looksLikeSteam ? IconStrategy.STEAM : IconStrategy.STANDARD,
 	};
 	saveDataBase(database);
 }
@@ -271,24 +311,31 @@ async function applyIcons(database) {
 			let icon = iconCache[shortcutId];
 			if (!icon) {
 				icon = await getIcon(shortcut);
-				iconCache[shortcut.id] = icon;
+				iconCache[shortcutId] = icon;
 			}
 			shortcut.icon = icon;
 		};
 	};
 }
 
-async function getIcon({ isFile, path }) {
+async function getIcon({ isFile, path, iconStrategy, iconPath }) {
 	try {
-		if (isFile) {
-			if (path.toLowerCase().endsWith('.url')) {
-				return getSteamIcon(path);
+		switch (iconStrategy) {
+			case IconStrategy.STANDARD: {
+				if (isFile) {
+					const nativeIcon = await app.getFileIcon(path, { size: 'large' });
+					return nativeIcon.toDataURL();
+				}
+				return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4Ij48cGF0aCBmaWxsPSIjRkZDQTI4IiBkPSJNMTAgNEg0Yy0xLjEgMC0xLjk5LjktMS45OSAyTDIgMThjMCAxLjEuOSAyIDIgMmgxNmMxLjEgMCAyLS45IDItMlY4YzAtMS4xLS45LTItMi0yaC04bC0yLTJ6Ii8+PC9zdmc+';
 			}
-
-			const nativeIcon = await app.getFileIcon(path, { size: 'large' });
-			return nativeIcon.toDataURL();
+			case IconStrategy.STEAM: {
+				const steamIcon = await getSteamIcon(path);
+				return steamIcon;
+			}
+			case IconStrategy.CUSTOM: {
+				return iconPath;
+			}
 		}
-		return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4Ij48cGF0aCBmaWxsPSIjRkZDQTI4IiBkPSJNMTAgNEg0Yy0xLjEgMC0xLjk5LjktMS45OSAyTDIgMThjMCAxLjEuOSAyIDIgMmgxNmMxLjEgMCAyLS45IDItMlY4YzAtMS4xLS45LTItMi0yaC04bC0yLTJ6Ii8+PC9zdmc+';
 	} catch (iconError) {
 		console.error(`Failed to get icon for: ${path}`, iconError);
 		const nativeIcon = await app.getFileIcon('', { size: 'large' });

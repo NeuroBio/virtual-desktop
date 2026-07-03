@@ -61,3 +61,34 @@ function setupCategorySettingsPrompt({ category, message, callBack }) {
 		{ once: true }
 	);
 }
+
+const iconOptions = Object.values(window.electronAPI.constants().IconStrategy);
+function setupIconPrompt({ category, shortcut, callBack }) {
+	d3.select('#icon-prompt-text').text(`Update Icon for ${shortcut.name} in ${category}`);
+
+	const previewIcon = d3.select('#icon-prompt-preview')
+		.attr('src', shortcut.icon);
+	const select = d3.select('#icon-prompt-select')
+		.html('')
+		.on('focus', function () { this.size = iconOptions.length; })
+		.on('blur', function () { this.size = 0; })
+		.on('change', async function () {
+			const iconStrategy = d3.select(this).property('value');
+			this.size = 1;
+			this.blur();
+
+			const response = await window.electronAPI.getIcon({ shortcut, iconStrategy });
+			previewIcon.attr('src', response.icon);
+		});
+	iconOptions.forEach(option =>
+		select.append('option')
+			.text(option)
+			.attr('value', option));
+	const prompt = d3.select('#icon-prompt').node();
+	prompt.showModal();
+	prompt.addEventListener('close',
+		() => callBack(prompt.returnValue, { iconStrategy: select.property('value') }),
+		{ once: true }
+	);
+
+}

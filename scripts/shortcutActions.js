@@ -4,9 +4,10 @@
 /* global setupInputPrompt */
 /* global setupSelectPrompt */
 /* global categoryNames */
+/* global setupIconPrompt */
+/* global toShortcutNameId */
+/* global repopulateIcon */
 
-
-console.log((window.electronAPI.constants()));
 async function addFileShortcut(category) {
 	const { success, database } = await window.electronAPI.addFileShortcut({ category });
 
@@ -50,21 +51,20 @@ async function removeShortcut({ event, category, shortcut }) {
 }
 
 async function renameShortcut({ event, category, shortcut }) {
-	console.log(shortcut);
 	setupInputPrompt({
 		message: `Rename ${shortcut.alias} from ${category}:`,
 		label: 'Name',
 		defaultValue: shortcut.alias,
 		callBack: async (response, alias) => {
 			if (response === 'submit') {
-				const { success, database } = await window.electronAPI.renameShortcut({
+				const { success, shortcut: updated, database } = await window.electronAPI.renameShortcut({
 					category,
 					shortcutId: shortcut.id,
 					alias,
 				});
 
 				if (success) {
-					repopulateIcons({ database, category });
+					repopulateIcon({ shortcut: updated, category, database });
 				}
 			}
 		}
@@ -93,6 +93,28 @@ async function moveShortcut({ event, oldCategory, shortcut }) {
 		}
 	});
 
+	dismissContextMenu();
+}
+
+async function modifyIcon({ event, category, shortcut }) {
+	setupIconPrompt({
+		shortcut,
+		category,
+		callBack: async (response, formData) => {
+			if (response === 'submit') {
+				const shortcutId = shortcut.id;
+				const { success, shortcut: updated, database } = await window.electronAPI.modifyIcon({
+					category,
+					shortcutId,
+					...formData
+				});
+
+				if (success) {
+					repopulateIcon({ shortcut: updated, category, database });
+				}
+			}
+		}
+	});
 	dismissContextMenu();
 }
 

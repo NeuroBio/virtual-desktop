@@ -77,3 +77,12 @@ input[type=checkbox] {
 		transform: rotate(45deg);
 	}
 }
+
+
+.image-preview-container {
+	display: flex;
+
+	.field {
+		flex-grow: 1;
+	}
+}

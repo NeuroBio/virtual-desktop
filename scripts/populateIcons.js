@@ -1,11 +1,16 @@
 /* global d3 */
 /* global addFileShortcut */
 /* global addFolderShortcut */
+
 /* global launchShortcut */
+
 /* global removeShortcut */
 /* global renameShortcut */
 /* global moveShortcut */
+/* global modifyIcon */
+
 /* global setupDragAndDrop */
+
 /* global toggleAccordion */
 /* global toggleAccordionTray */
 /* global updateCategorySettings */
@@ -113,44 +118,71 @@ function toAccordionButtonId(category) {
 	return `${sanitize(category)}-button`;
 }
 
+function toShortcutId(shortcutId) {
+	return `shortcut-${shortcutId}`;
+}
+
+function toShortcutIconId(shortcutId) {
+	return `shortcut-${shortcutId}-icon`;
+}
+
+function toShortcutNameId(shortcutId) {
+	return `shortcut-${shortcutId}-name`;
+}
+
 function populateIcons(database, category) {
 	const categoryElement = d3.select(`#${toCategoryId(category)}`);
 	database[category].shortcuts.forEach((shortcut) => {
 		const entry = categoryElement.append('div')
-			.on('dblclick', () => launchShortcut(shortcut.path))
-			.on('contextmenu', () => {
-				const event = d3.event;
-				event.preventDefault();
-				event.stopPropagation();
-				d3.select('#context-menu')
-					.style('left', `${event.pageX}px`)
-					.style('top', `${event.pageY}px`)
-					.style('display', 'flex');
+			.attr('id', toShortcutId(shortcut.id));
+		populateIcon(entry, shortcut, category, database);
+	});
+}
 
-				d3.select('#context-menu-name').text(shortcut.name);
-				d3.select('#remove-shortcut')
-					.on('click', () => removeShortcut({ event, category, shortcut }));
-				d3.select('#rename-shortcut')
-					.on('click', () => renameShortcut({ event, category, shortcut }));
-				d3.select('#move-shortcut')
-					.on('click', () => moveShortcut({ event, oldCategory: category, shortcut }));
-			});
+function repopulateIcon({ shortcut, category, database }) {
+	const entry = d3.select(`#${toShortcutId(shortcut.id)}`).html('');
+	populateIcon(entry, shortcut, category, database);
+}
 
-		setupDragAndDrop({
-			database,
-			node: entry.node(),
-			shortcut,
-			category,
+function populateIcon(entry, shortcut, category, database) {
+	entry
+		.on('dblclick', () => launchShortcut(shortcut.path))
+		.on('contextmenu', () => {
+			const event = d3.event;
+			event.preventDefault();
+			event.stopPropagation();
+			d3.select('#context-menu')
+				.style('left', `${event.pageX}px`)
+				.style('top', `${event.pageY}px`)
+				.style('display', 'flex');
+
+			d3.select('#context-menu-name').text(shortcut.name);
+			d3.select('#remove-shortcut')
+				.on('click', () => removeShortcut({ event, category, shortcut }));
+			d3.select('#modify-icon')
+				.on('click', () => modifyIcon({ event, category, shortcut }));
+			d3.select('#rename-shortcut')
+				.on('click', () => renameShortcut({ event, category, shortcut }));
+			d3.select('#move-shortcut')
+				.on('click', () => moveShortcut({ event, oldCategory: category, shortcut }));
 		});
 
-		entry.attr('class', 'icon-entry')
-			.append('img')
-			.attr('src', shortcut.icon);
-
-		entry.append('span')
-			.attr('class', 'icon-name')
-			.text(shortcut.alias);
+	setupDragAndDrop({
+		database,
+		node: entry.node(),
+		shortcut,
+		category,
 	});
+
+	entry.attr('class', 'icon-entry')
+		.append('img')
+		.attr('id', toShortcutIconId(shortcut.id))
+		.attr('src', shortcut.icon);
+
+	entry.append('span')
+		.attr('class', 'icon-name')
+		.attr('id', toShortcutNameId(shortcut.id))
+		.text(shortcut.alias);
 }
 
 function repopulateIcons({ database, category }) {

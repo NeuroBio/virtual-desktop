@@ -80,10 +80,29 @@
 		</form>
 	</dialog>
 
+	<dialog id="icon-prompt">
+		<form method="dialog">
+			<p id="icon-prompt-text" class="dialog-text"></p>
+			<div class="image-preview-container">
+				<div class="field">
+					<select id="icon-prompt-select">
+					</select>
+				</div>
+				<img id="icon-prompt-preview">
+
+			</div>
+			<hr>
+			<div class="dialog-actions">
+				<button value="submit">Submit</button>
+			</div>
+		</form>
+	</dialog>
+
 
 	<ul id="context-menu" class="context-menu" style="display: none;">
 		<span id="context-menu-name"></span>
 		<li class="context-menu-item" id="rename-shortcut">Rename</li>
+		<li class="context-menu-item" id="modify-icon">Modify Icon</li>
 		<li class="context-menu-item" id="remove-shortcut">Remove</li>
 		<li class="context-menu-item" id="move-shortcut">Move</li>
 	</ul>
