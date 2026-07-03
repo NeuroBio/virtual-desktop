@@ -65,6 +65,7 @@ button {
 	flex-wrap: wrap;
 	row-gap: 3px;
 	column-gap: 3px;
+	transition: margin 0.25s ease .15s;
 }
 
 .icon-entry {

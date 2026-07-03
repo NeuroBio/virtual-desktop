@@ -17,7 +17,6 @@
 			visibility: visible;
 			padding: .5em;
 			max-height: 400vh;
-			transition: all .25s;
 		}
 	}
 
@@ -31,13 +30,16 @@
 			visibility: hidden;
 			padding: 0 .5em;
 			max-height: 0px;
-			transition: all .25s;
 		}
 
 		.accordion-header {
 			border-radius: 5px;
 		}
 	}
+}
+
+.accordion-body {
+	transition: all .25s;
 }
 
 .accordion-header {}
@@ -98,4 +100,9 @@
 		max-height: 0px;
 		transition: all .25s;
 	}
+}
+
+.leave-menu-space {
+	margin-right: 80px;
+	transition: margin 0.25s;
 }

@@ -3,6 +3,7 @@
 /* global toAccordionButtonId */
 /* global toAccordionTrayId */
 /* global toMoreActionsId */
+/* global toCategoryId */
 
 function toggleAccordion({ isOpen, category }) {
 	d3.select(`#${toAccordionHeaderId(category)}`)
@@ -20,4 +21,8 @@ function toggleAccordionTray({ isOpen, category }) {
 
 	d3.select(`#${toMoreActionsId(category)}`)
 		.on('click', () => toggleAccordionTray({ isOpen: !isOpen, category }));
+
+	d3.select(`#${toCategoryId(category)}`)
+		.classed('leave-menu-space', !isOpen);
+
 }
