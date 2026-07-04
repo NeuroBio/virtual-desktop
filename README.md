@@ -16,6 +16,6 @@ To make the application automatically run when you log into Windows:
 ### For Build
 - `npm install`
 - `npm run build`
-- snag Virtual Desktop Setup [Version Number] from dist
+- snag `Virtual Desktop Setup [Version Number].exe` from dist
 - Run the installer and launch it
-- on launch, it will auto register to run on startup
+- On launch, it will auto register to run on startup
