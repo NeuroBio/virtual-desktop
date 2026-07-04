@@ -53,7 +53,8 @@ function setupCategorySettingsPrompt({ category, message, callBack }) {
 	const checkbox = d3.select('#category-settings-checkbox')
 		.property('checked', category?.defaultOpen || false);
 	const position = d3.select('#category-settings-position')
-		.property('value', category?.position + 1 || categoryNames.length);
+		.property('value', category?.position + 1 || categoryNames.length)
+		.property('disabled', !category);
 	const prompt = d3.select('#category-settings-prompt').node();
 	prompt.showModal();
 	prompt.addEventListener('close',
