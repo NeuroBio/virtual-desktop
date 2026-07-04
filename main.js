@@ -246,10 +246,6 @@ ipcMain.handle('get-icon', async (event, data) => {
 	const { shortcut, iconStrategy } = data;
 	try {
 		const icon = await getIcon({ ...shortcut, iconStrategy });
-		console.log({
-			shortcut,
-			icon, iconStrategy
-		});
 		return {
 			success: true,
 			icon,

@@ -9,20 +9,23 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 	display: flex;
 	flex-direction: column;
-	min-height: 100vh;
+	height: 100vh;
 	margin: 0;
 	padding: 4px;
 	box-sizing: border-box;
 }
 
 .frame {
-	flex-grow: 1;
+	flex: 1;
 	display: flex;
 	flex-direction: column;
+	overflow: hidden;
 }
 
 #categories {
+	flex-basis: 0;
 	flex-grow: 1;
+	overflow-y: auto;
 }
 
 .add-buttons {
