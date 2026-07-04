@@ -108,7 +108,7 @@ function sanitize(category) {
 	return category
 		.split(' ')
 		.join('_')
-		.replace('.', '');
+		.replace(/[^\w.-]/g, '');
 }
 
 function toCategoryId(category) {

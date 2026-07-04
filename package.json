@@ -1,6 +1,6 @@
 {
   "name": "virtual-desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A small app that allows shortcuts to be grouped by category.  Each category is an expansion panel that can be defaulted to open or closed, creating a task-focused experience.  Designed for users that need to maintain deeply-nested, rigid folder-structures.",
   "main": "main.js",
   "scripts": {
