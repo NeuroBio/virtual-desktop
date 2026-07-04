@@ -24,13 +24,11 @@ function createWindow() {
 	win.loadFile(path.join(__dirname, 'index.html'));
 }
 
-// Configure the app to start up with Windows
 const appLauncher = new AutoLaunch({
-	name: 'Task Assistant',
-	path: process.execPath, // Points to the app execution path
+	name: 'Virtual Desktop',
+	path: process.execPath,
 });
 
-// Launches the window once Electron is ready
 app.whenReady().then(() => {
 	// Menu.setApplicationMenu(null);
 
@@ -51,9 +49,10 @@ app.whenReady().then(() => {
 	});
 });
 
-// Closes the app completely when you close the window
 app.on('window-all-closed', () => {
-	if (process.platform !== 'darwin') app.quit();
+	if (process.platform !== 'darwin') {
+		app.quit();
+	}
 });
 
 ipcMain.on('constants', (event) => {
@@ -308,7 +307,6 @@ function addToDatabase({ database, category, path, isFile }) {
 	database[category] ??= { shortcuts: {} };
 	const id = Date.now().toString();
 	const name = getShortcutName(path);
-	const looksLikeSteam = isFile && path.toLowerCase().endsWith('.url');
 
 	database[category].shortcuts[id] = {
 		id,
@@ -317,10 +315,26 @@ function addToDatabase({ database, category, path, isFile }) {
 		name,
 		alias: name,
 		position: Object.keys(database[category].shortcuts).length,
-		iconStrategy: looksLikeSteam ? IconStrategy.STEAM : IconStrategy.STANDARD,
+		iconStrategy: getDefaultIconStrategy({ isFile, path }),
 		iconPath: '',
 	};
 	saveDataBase(database);
+}
+
+function getDefaultIconStrategy({ isFile, path }) {
+	if (!isFile) {
+		IconStrategy.STANDARD;
+	}
+
+	if (path.toLowerCase().endsWith('.url')) {
+		return IconStrategy.STEAM;
+	}
+
+	if (path.toLowerCase().endsWith('.pdf')) {
+		return IconStrategy.PDF;
+	}
+
+	return IconStrategy.STANDARD;
 }
 
 async function applyIcons(database) {
