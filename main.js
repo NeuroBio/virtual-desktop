@@ -4,6 +4,7 @@ const path = require('path');
 const IconStrategy = require('./consts/IconStrategy.js');
 const AutoLaunch = require('auto-launch');
 let databasePath = '';
+let configPath = '';
 const iconCache = {};
 
 function createWindow() {
@@ -20,7 +21,6 @@ function createWindow() {
 }
 
 function getScreenSizeAndPosition() {
-	const configPath = path.join(app.getPath('userData'), 'app-config.json');
 	if (fs.existsSync(configPath)) {
 		try {
 			return JSON.parse(fs.readFileSync(configPath, 'utf8'));
@@ -49,6 +49,8 @@ app.whenReady().then(() => {
 	// Menu.setApplicationMenu(null);
 
 	databasePath = path.join(app.getPath('userData'), 'shortcuts.json');
+	configPath = path.join(app.getPath('userData'), 'app-config.json');
+
 
 	if (!fs.existsSync(databasePath)) {
 		fs.writeFileSync(databasePath, JSON.stringify({}, null, 2), 'utf-8');
@@ -57,6 +59,12 @@ app.whenReady().then(() => {
 		console.log(`Loading Shortcuts Database: ${databasePath}`);
 	}
 
+	if (!fs.existsSync(configPath)) {
+		fs.writeFileSync(configPath, JSON.stringify(getScreenSizeAndPosition(), null, 2), 'utf-8');
+		console.log(`Created App Settings: ${configPath}`);
+	} else {
+		console.log(`Loading App Settings: ${configPath}`);
+	}
 
 	createWindow();
 
