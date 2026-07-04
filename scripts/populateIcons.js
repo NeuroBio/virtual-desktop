@@ -28,7 +28,9 @@ d3.select(`#add-category`).on('click', () => addCategory());
 function populateCategories(database) {
 	console.log(database);
 
-	categoryNames = Object.keys(database);
+	categoryNames = Object.values(database)
+		.sort((a, b) => a.position - b.position)
+		.map((cat) => cat.name);
 	categoryNames.forEach((category) => createCategory({ category, database }));
 
 }
