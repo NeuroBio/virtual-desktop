@@ -171,16 +171,12 @@ ipcMain.handle('reorder', async (event, data) => {
 	const { category, dragId, dropId } = data;
 	try {
 		const database = loadDatabase();
-		const sortedShortcuts = Object.values(database[category].shortcuts)
-			.sort((a, b) => a.position - b.position);
-		const [movedItem] = sortedShortcuts.splice(dragId, 1);
-		sortedShortcuts.splice(dropId, 0, movedItem);
-
-		database[category].shortcuts = sortedShortcuts.reduce((keyed, s, i) => {
-			s.position = i;
-			keyed[s.id] = s;
-			return keyed;
-		}, {});
+		database[category].shortcuts = moveByPosition({
+			oldPosition: dragId,
+			array: database[category].shortcuts,
+			newPosition: dropId,
+			key: 'id',
+		});
 
 		saveDataBase(database);
 		await readyForUi(database);
@@ -229,13 +225,27 @@ ipcMain.handle('add-category', async (event, data) => {
 });
 
 ipcMain.handle('update-category-settings', async (event, data) => {
-	const { oldName, name, defaultOpen } = data;
+	const { oldName, name, defaultOpen, position } = data;
 	try {
-		const database = loadDatabase();
+		let database = loadDatabase();
 
 		const category = database[oldName];
-		delete database[oldName];
-		category.name = name;
+
+		if (oldName !== name) {
+			delete database[oldName];
+			category.name = name;
+
+		}
+
+		if (position !== category.position) {
+			database = moveByPosition({
+				array: database,
+				oldPosition: category.position,
+				newPosition: +position,
+				key: 'name',
+			});
+		}
+
 		category.defaultOpen = defaultOpen;
 		database[name] = category;
 
@@ -348,6 +358,18 @@ ipcMain.handle('update-app-settings', async (event, data) => {
 	}
 });
 
+function moveByPosition({ array, oldPosition, newPosition, key }) {
+	const sorted = Object.values(array)
+		.sort((a, b) => a.position - b.position);
+	const [movedItem] = sorted.splice(oldPosition, 1);
+	sorted.splice(newPosition, 0, movedItem);
+
+	return sorted.reduce((keyed, s, i) => {
+		s.position = i;
+		keyed[s[key]] = s;
+		return keyed;
+	}, {});
+}
 
 function loadDatabase() {
 	const rawData = fs.readFileSync(databasePath, 'utf-8');

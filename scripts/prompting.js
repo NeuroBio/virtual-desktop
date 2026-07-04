@@ -51,12 +51,15 @@ function setupCategorySettingsPrompt({ category, message, callBack }) {
 		.property('value', category?.name || '');
 	const checkbox = d3.select('#category-settings-checkbox')
 		.property('checked', category?.defaultOpen || false);
+	const position = d3.select('#category-settings-position')
+		.property('value', category?.position || '');
 	const prompt = d3.select('#category-settings-prompt').node();
 	prompt.showModal();
 	prompt.addEventListener('close',
 		() => callBack(prompt.returnValue, {
 			name: input.property('value'),
 			defaultOpen: checkbox.property('checked'),
+			position: position.property('value'),
 		}),
 		{ once: true }
 	);
