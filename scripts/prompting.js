@@ -61,6 +61,20 @@ function setupCategorySettingsPrompt({ category, message, callBack }) {
 		{ once: true }
 	);
 }
+
+function setupAppSettingsPrompt({ callBack }) {
+	const prompt = d3.select('#app-settings-dialog').node();
+	prompt.showModal();
+	prompt.addEventListener('close',
+		() => callBack(prompt.returnValue, {
+			// name: input.property('value'),
+			// defaultOpen: checkbox.property('checked'),
+		}),
+		{ once: true }
+	);
+}
+
+
 const IconStrategy = window.electronAPI.constants().IconStrategy;
 const iconOptions = Object.values(IconStrategy);
 function setupIconPrompt({ category, shortcut, callBack }) {

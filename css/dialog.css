@@ -106,3 +106,21 @@ input[type=file] {
 	display: flex !important;
 	/* Genuinely needs important to override id level styling */
 }
+
+input[type=number] {
+	flex-grow: 1;
+	color: whitesmoke;
+	background-color: rgb(15, 14, 15);
+	border: 0;
+	padding: 3px;
+	font-size: 9pt;
+	border-radius: 5px;
+	appearance: textfield;
+	margin-bottom: 5px;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}

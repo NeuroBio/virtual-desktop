@@ -7,13 +7,8 @@ let databasePath = '';
 const iconCache = {};
 
 function createWindow() {
-	const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize;
-	const panelWidth = screenWidth / 5;
 	const win = new BrowserWindow({
-		width: panelWidth,
-		height: screenHeight,
-		x: screenWidth - panelWidth,
-		y: 0,
+		...getScreenSizeAndPosition(),
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
 			contextIsolation: true,
@@ -22,6 +17,27 @@ function createWindow() {
 	});
 
 	win.loadFile(path.join(__dirname, 'index.html'));
+}
+
+function getScreenSizeAndPosition() {
+	const configPath = path.join(app.getPath('userData'), 'app-config.json');
+	if (fs.existsSync(configPath)) {
+		try {
+			return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+		} catch (error) {
+			console.log('Error parsing app settings json:', error);
+		}
+	}
+
+
+	const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize;
+	const panelWidth = Math.round(screenWidth / 5);
+	return {
+		width: panelWidth,
+		height: screenHeight,
+		x: screenWidth - panelWidth,
+		y: 0,
+	};
 }
 
 const appLauncher = new AutoLaunch({

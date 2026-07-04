@@ -105,6 +105,10 @@ img {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	font-size: 12pt;
+
+	line-height: 1;
+	padding: 5px;
 }
 
 hr {
@@ -115,15 +119,12 @@ hr {
 
 footer {
 	display: flex;
-	flex-direction: row-reverse;
+	justify-content: space-between;
 	border-top: 1px solid rgb(85, 26, 80);
 	padding: 5px;
 	background-color: rgb(15, 14, 15);
 }
 
-.ellipses {
-	width: 16px;
-	height: 16px;
-	fill: currentColor;
-	pointer-events: none;
+#app-settings-button {
+	font-size: 12pt;
 }

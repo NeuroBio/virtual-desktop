@@ -16,19 +16,13 @@
 /* global updateCategorySettings */
 /* global deleteCategory */
 /* global addCategory */
-
-const ellipsesSVG = `
-  <svg viewBox="0 0 24 24" class="ellipses">
-    <circle cx="5" cy="12" r="2" />
-    <circle cx="12" cy="12" r="2" />
-    <circle cx="19" cy="12" r="2" />
-  </svg>
-`;
+/* global updateAppSettings */
 
 // BE WARY OF CHANGING THIS VARIABLE
 let categoryNames = [];
 dismissContextMenu();
 d3.select('body').on('click contextmenu', () => dismissContextMenu());
+d3.select(`#app-settings`).on('click', () => updateAppSettings());
 d3.select(`#add-category`).on('click', () => addCategory());
 
 function populateCategories(database) {
@@ -71,7 +65,7 @@ function populateCategory({ main, database, category }) {
 	const headerButtons = header.append('div')
 		.attr('class', 'add-buttons');
 	headerButtons.append('button')
-		.html(ellipsesSVG)
+		.html('&#8943;')
 		.attr('id', toMoreActionsId(category))
 		.attr('class', 'more-actions')
 		.on('click', () => toggleAccordionTray({ isOpen: false, category }));
