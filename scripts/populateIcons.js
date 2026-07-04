@@ -26,8 +26,6 @@ d3.select(`#app-settings`).on('click', () => updateAppSettings());
 d3.select(`#add-category`).on('click', () => addCategory());
 
 function populateCategories(database) {
-	console.log(database);
-
 	categoryNames = Object.values(database)
 		.sort((a, b) => a.position - b.position)
 		.map((cat) => cat.name);

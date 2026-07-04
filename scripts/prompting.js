@@ -1,4 +1,5 @@
 /* global d3 */
+/* global categoryNames */
 
 function setupConfirmPrompt({ message, callBack }) {
 	d3.select('#confirm-text').text(message);
@@ -52,7 +53,7 @@ function setupCategorySettingsPrompt({ category, message, callBack }) {
 	const checkbox = d3.select('#category-settings-checkbox')
 		.property('checked', category?.defaultOpen || false);
 	const position = d3.select('#category-settings-position')
-		.property('value', category?.position + 1 || 0);
+		.property('value', category?.position + 1 || categoryNames.length);
 	const prompt = d3.select('#category-settings-prompt').node();
 	prompt.showModal();
 	prompt.addEventListener('close',
@@ -66,7 +67,6 @@ function setupCategorySettingsPrompt({ category, message, callBack }) {
 }
 
 function setupAppSettingsPrompt({ callBack, settings }) {
-	console.log(settings);
 	const width = d3.select('#settings-width').property('value', settings.width);
 	const height = d3.select('#settings-height').property('value', settings.height);
 	const x = d3.select('#settings-x').property('value', settings.x);

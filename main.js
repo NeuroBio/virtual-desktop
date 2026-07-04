@@ -26,7 +26,7 @@ function getScreenSizeAndPosition() {
 		try {
 			return JSON.parse(fs.readFileSync(configPath, 'utf8'));
 		} catch (error) {
-			console.log('Error parsing app settings json:', error);
+			console.error('Error parsing app settings json:', error);
 		}
 	}
 
@@ -342,7 +342,7 @@ ipcMain.handle('get-app-settings', async () => {
 			settings: JSON.parse(fs.readFileSync(configPath, 'utf8')),
 		};
 	} catch (error) {
-		console.log('Error loading or parsing app settings json:', error);
+		console.error('Error loading or parsing app settings json:', error);
 		return { success: false };
 	}
 });
