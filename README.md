@@ -1,4 +1,36 @@
-# Task Assistant
+# Virtual Desktop
+## What is it
+A minimal electron app that allows you to create shortcuts via file navigation and then short them into self-created categories.  This is designed for users with deeply nested folder structures that have to remain nested by they wished was a flat, organized file structure.
+Runs on startup.  The initial size and position on your desktop is configurable.
+
+![App Preview](./teaser.png)
+
+Available actions include...
+- Categories
+	- Add
+	- Delete
+	- Update settings
+		- Rename
+		- Default Open/Closed
+		- Position (order from top to bottom)
+	- Add File
+	- Add Folder
+- Shortcuts
+	- Remove (delete)
+	- Launch (on double click)
+	- Reorder (by drag and drop with in a category)
+	- Move (to another category)
+	- Rename (sets an alias on top of the real file/folder name)
+	- Modify Icon (has four modes)
+		- Standard (current default)
+		- Steam (current default for .url)
+		- PDF (current default for .pdf)
+		- Custom (point to any image file type)
+- App
+	- Configure startup location and size on desktop (via gear button)
+
+
+
 ## Fresh Machine Installation Steps
 ### The usual
 1. Run `npm install`
@@ -19,3 +51,5 @@ To make the application automatically run when you log into Windows:
 - snag `Virtual Desktop Setup [Version Number].exe` from dist
 - Run the installer and launch it
 - On launch, it will auto register to run on startup
+
+---
