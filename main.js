@@ -5,10 +5,11 @@ const IconStrategy = require('./consts/IconStrategy.js');
 const AutoLaunch = require('auto-launch');
 let databasePath = '';
 let configPath = '';
+let win;
 const iconCache = {};
 
 function createWindow() {
-	const win = new BrowserWindow({
+	win = new BrowserWindow({
 		...getScreenSizeAndPosition(),
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
@@ -313,6 +314,36 @@ ipcMain.handle('delete-category', async (event, data) => {
 		return { success: true, database };
 	} catch (error) {
 		console.error("Failed to update category settings:", error);
+		return { success: false };
+	}
+});
+
+ipcMain.handle('get-app-settings', async () => {
+	try {
+		return {
+			success: true,
+			settings: JSON.parse(fs.readFileSync(configPath, 'utf8')),
+		};
+	} catch (error) {
+		console.log('Error loading or parsing app settings json:', error);
+		return { success: false };
+	}
+});
+
+ipcMain.handle('update-app-settings', async (event, data) => {
+	const { width, height, x, y } = data;
+	try {
+		const config = {
+			width: +width,
+			height: +height,
+			x: +x,
+			y: +y,
+		};
+		win.setBounds(config);
+		fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
+		return { success: true };
+	} catch (error) {
+		console.log('Error saving app settings json:', error);
 		return { success: false };
 	}
 });

@@ -62,13 +62,20 @@ function setupCategorySettingsPrompt({ category, message, callBack }) {
 	);
 }
 
-function setupAppSettingsPrompt({ callBack }) {
+function setupAppSettingsPrompt({ callBack, settings }) {
+	console.log(settings);
+	const width = d3.select('#settings-width').property('value', settings.width);
+	const height = d3.select('#settings-height').property('value', settings.height);
+	const x = d3.select('#settings-x').property('value', settings.x);
+	const y = d3.select('#settings-y').property('value', settings.y);
 	const prompt = d3.select('#app-settings-dialog').node();
 	prompt.showModal();
 	prompt.addEventListener('close',
 		() => callBack(prompt.returnValue, {
-			// name: input.property('value'),
-			// defaultOpen: checkbox.property('checked'),
+			width: width.property('value'),
+			height: height.property('value'),
+			x: x.property('value'),
+			y: y.property('value'),
 		}),
 		{ once: true }
 	);

@@ -7,7 +7,9 @@ async function init() {
 }
 
 async function updateAppSettings() {
+	const { settings } = await window.electronAPI.getAppSettings();
 	setupAppSettingsPrompt({
+		settings,
 		callBack: async (response, formData) => {
 			if (response === 'submit') {
 				const { success, database } = await window.electronAPI.updateAppSettings(formData);
