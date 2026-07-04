@@ -49,6 +49,13 @@ const appLauncher = new AutoLaunch({
 app.whenReady().then(() => {
 	Menu.setApplicationMenu(null);
 
+	if (app.isPackaged) {
+		app.setLoginItemSettings({
+			openAtLogin: true,
+			path: app.getPath('exe')
+		});
+	}
+
 	databasePath = path.join(app.getPath('userData'), 'shortcuts.json');
 	configPath = path.join(app.getPath('userData'), 'app-config.json');
 
