@@ -1,7 +1,6 @@
 # Virtual Desktop
 ## What is it
-A minimal electron app that allows you to create shortcuts via file navigation and then short them into self-created categories.  This is designed for users with deeply nested folder structures that have to remain nested by they wished was a flat, organized file structure.
-Runs on startup.  The initial size and position on your desktop is configurable.
+A minimal electron app that allows you to create shortcuts via file navigation and then sort them into self-created categories.  This is designed for users with deeply nested folder structures that must remain nested.  This creates a virtual flat, structure like a standard desktop, but uses the category expansion panels to create an organized system.  Installs with run on startup.  The initial size and position on your desktop is configurable.
 
 ![App Preview](./teaser.png)
 
@@ -50,6 +49,6 @@ To make the application automatically run when you log into Windows:
 - `npm run build`
 - snag `Virtual Desktop Setup [Version Number].exe` from dist
 - Run the installer and launch it
-- On launch, it will auto register to run on startup
+- On launch, it will auto register itself to run on startup
 
 ---
