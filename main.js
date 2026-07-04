@@ -47,7 +47,7 @@ const appLauncher = new AutoLaunch({
 });
 
 app.whenReady().then(() => {
-	// Menu.setApplicationMenu(null);
+	Menu.setApplicationMenu(null);
 
 	databasePath = path.join(app.getPath('userData'), 'shortcuts.json');
 	configPath = path.join(app.getPath('userData'), 'app-config.json');
