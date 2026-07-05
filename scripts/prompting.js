@@ -77,6 +77,8 @@ function setupAppSettingsPrompt({ callBack }) {
 	const y = d3.select('#settings-y').property('value', appSettings.y);
 	const showExtensions = d3.select('#app-settings-checkbox')
 		.property('checked', appSettings.showExtensions);
+	const iconNameLines = d3.select('#icon-name-lines-y').property('value', appSettings.iconNameLines);
+
 	const prompt = d3.select('#app-settings-dialog').node();
 	prompt.showModal();
 	prompt.addEventListener('close',
@@ -86,6 +88,7 @@ function setupAppSettingsPrompt({ callBack }) {
 			x: x.property('value'),
 			y: y.property('value'),
 			showExtensions: showExtensions.property('checked'),
+			iconNameLines: iconNameLines.property('value'),
 		}),
 		{ once: true }
 	);

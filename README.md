@@ -32,6 +32,7 @@ Available actions include...
 		- height
 		- width
 	- Show file extensions
+	- Change the number of lines in shortcut names
 
 
 

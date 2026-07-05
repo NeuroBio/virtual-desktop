@@ -39,6 +39,7 @@ function getConfig() {
 		x: screenWidth - panelWidth,
 		y: 0,
 		showExtensions: false,
+		iconNameLines: 2,
 	};
 }
 
@@ -357,7 +358,7 @@ ipcMain.handle('get-app-settings', async () => {
 });
 
 ipcMain.handle('update-app-settings', async (event, data) => {
-	const { width, height, x, y, showExtensions } = data;
+	const { width, height, x, y, showExtensions, iconNameLines } = data;
 	try {
 		const config = {
 			width: +width,
@@ -365,6 +366,7 @@ ipcMain.handle('update-app-settings', async (event, data) => {
 			x: +x,
 			y: +y,
 			showExtensions,
+			iconNameLines: +iconNameLines,
 		};
 		win.setBounds(config);
 		fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');

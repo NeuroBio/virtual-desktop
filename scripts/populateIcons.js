@@ -195,10 +195,15 @@ function populateIcon(entry, shortcut, category, database) {
 		.attr('id', toShortcutIconId(shortcut.id))
 		.attr('src', shortcut.icon);
 
-	entry.append('span')
-		.attr('class', 'icon-name')
+	const iconName = entry.append('span');
+	iconName.attr('class', 'icon-name')
 		.attr('id', toShortcutNameId(shortcut.id))
+		.style('height', getLineHeight())
 		.text(`${shortcut.alias}${addExtension(shortcut)}`);
+}
+
+function getLineHeight() {
+	return `${appSettings.iconNameLines * 13}px`;
 }
 
 function calculateContextPosition({ menu, event }) {

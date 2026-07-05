@@ -18,7 +18,7 @@ async function updateAppSettings() {
 				const { success, settings, database } = await window.electronAPI.updateAppSettings(formData);
 				if (success) {
 					appSettings = settings;
-					if (appSettings.showExtensions !== priorSettings.showExtensions) {
+					if (requiresReload({ appSettings, priorSettings })) {
 						clearView();
 						populateCategories(database);
 					}
@@ -26,6 +26,11 @@ async function updateAppSettings() {
 			}
 		}
 	});
+}
+
+function requiresReload({ appSettings, priorSettings }) {
+	return appSettings.showExtensions !== priorSettings.showExtensions
+		|| appSettings.iconNameLines !== priorSettings.iconNameLines;
 }
 
 window.addEventListener('DOMContentLoaded', init, { once: true });
