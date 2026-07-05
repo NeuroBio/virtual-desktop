@@ -52,7 +52,8 @@ async function removeShortcut({ event, category, shortcut }) {
 async function renameShortcut({ event, category, shortcut }) {
 	setupShortcutNamePrompt({
 		message: `Rename ${shortcut.alias} from ${category}:`,
-		label: 'Name',
+		label: 'Alias',
+		name: shortcut.name,
 		defaultValue: shortcut.alias,
 		callBack: async (response, alias) => {
 			if (response === 'submit') {

@@ -11,8 +11,9 @@ function setupConfirmPrompt({ message, callBack }) {
 	);
 }
 
-function setupShortcutNamePrompt({ message, label, defaultValue, callBack }) {
+function setupShortcutNamePrompt({ message, label, name, defaultValue, callBack }) {
 	d3.select('#rename-text').text(message);
+	d3.select('#rename-original').text(`Original Name: ${name}`);
 	d3.select('#rename-prompt-label').text(label);
 	const input = d3.select('#rename-prompt-input')
 		.property('value', defaultValue || '');
