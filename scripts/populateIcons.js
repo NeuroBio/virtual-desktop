@@ -171,7 +171,7 @@ function populateIcon(entry, shortcut, category, database) {
 			menu.style('left', `${leftPos}px`)
 				.style('top', `${topPos}px`);
 
-			d3.select('#context-menu-name').text(shortcut.name);
+			d3.select('#context-menu-name').text(shortcut.alias);
 			d3.select('#remove-shortcut')
 				.on('click', () => removeShortcut({ event, category, shortcut }));
 			d3.select('#modify-icon')

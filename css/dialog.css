@@ -141,3 +141,7 @@ input[type="file"]::file-selector-button {
 	padding: 5px;
 	border-radius: 5px;
 }
+
+#shortcut-rename-extension {
+	font-size: 9pt;
+}
