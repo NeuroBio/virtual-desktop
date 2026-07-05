@@ -50,7 +50,7 @@ const appLauncher = new AutoLaunch({
 });
 
 app.whenReady().then(() => {
-	// Menu.setApplicationMenu(null);
+	Menu.setApplicationMenu(null);
 
 	if (app.isPackaged) {
 		app.setLoginItemSettings({
