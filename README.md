@@ -34,6 +34,11 @@ Available actions include...
 	- Show file extensions
 	- Change the number of lines in shortcut names
 
+## Standard User Instructions
+1. Go to [Releases](https://github.com/NeuroBio/virtual-desktop/releases)
+2. Download `Virtual.Desktop.Setup[Latest Version].exe`
+3. Run the installer
+
 
 
 ## Fresh Machine Installation Steps

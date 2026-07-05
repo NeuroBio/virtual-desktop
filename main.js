@@ -5,7 +5,7 @@ const IconStrategy = require('./consts/IconStrategy.js');
 const AutoLaunch = require('auto-launch');
 let databasePath = '';
 let configPath = '';
-const appPath = app.getAppPath();
+const appPath = path.dirname(process.execPath);
 let win;
 const iconCache = {};
 
