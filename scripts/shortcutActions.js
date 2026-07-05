@@ -25,7 +25,7 @@ async function addFolderShortcut(category) {
 }
 
 async function launchShortcut(path) {
-	const result = await window.electronAPI.launchShortcut({ filePath: path });
+	const result = await window.electronAPI.launchShortcut(path);
 	if (!result.success) {
 		console.error(`Could not launch asset: ${result.error}`);
 	}
