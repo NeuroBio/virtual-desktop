@@ -126,6 +126,7 @@ footer {
 	background-color: rgb(15, 14, 15);
 }
 
-#app-settings {
+#app-settings,
+#app-info {
 	font-size: 12pt;
 }

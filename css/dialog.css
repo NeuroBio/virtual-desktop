@@ -145,3 +145,10 @@ input[type="file"]::file-selector-button {
 #shortcut-rename-extension {
 	font-size: 9pt;
 }
+
+#app-info-dialog-button-box {
+	display: flex;
+	flex-direction: column;
+	row-gap: 3px;
+	align-items: flex-start;
+}

@@ -18,12 +18,14 @@
 /* global addCategory */
 /* global updateAppSettings */
 /* global appSettings */
+/* global updateAppInfo */
 
 // BE WARY OF CHANGING THIS VARIABLE
 let categoryNames = [];
 dismissContextMenu();
 d3.select('body').on('click contextmenu', () => dismissContextMenu());
 d3.select(`#app-settings`).on('click', () => updateAppSettings());
+d3.select(`#app-info`).on('click', () => updateAppInfo());
 d3.select(`#add-category`).on('click', () => addCategory());
 
 function populateCategories(database) {
@@ -160,7 +162,7 @@ function repopulateIcon({ shortcut, category, database }) {
 
 function populateIcon(entry, shortcut, category, database) {
 	entry
-		.on('dblclick', () => launchShortcut(shortcut.path))
+		.on('dblclick', () => launchShortcut({ filePath: shortcut.path }))
 		.on('contextmenu', () => {
 			const event = d3.event;
 			event.preventDefault();

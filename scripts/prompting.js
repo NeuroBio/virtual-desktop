@@ -2,6 +2,9 @@
 /* global categoryNames */
 /* global appSettings */
 /* global addExtension */
+/* global openGithub */
+/* global openShortcutsData */
+/* global openConfigData */
 
 function setupConfirmPrompt({ message, callBack }) {
 	d3.select('#confirm-text').text(message);
@@ -92,6 +95,14 @@ function setupAppSettingsPrompt({ callBack }) {
 		}),
 		{ once: true }
 	);
+}
+
+function setupAppInfoPrompt() {
+	d3.select('#info-github').on('click', () => openGithub());
+	d3.select('#info-see-shortcuts').on('click', () => openShortcutsData());
+	d3.select('#info-see-config').on('click', () => openConfigData());
+	const prompt = d3.select('#app-info-dialog').node();
+	prompt.showModal();
 }
 
 

@@ -19,7 +19,10 @@
 		</div>
 
 		<footer>
-			<button id="app-settings">&#9881;</button>
+			<div>
+				<button id="app-settings">&#9881;</button>
+				<button id="app-info">🛈</button>
+			</div>
 			<button id="add-category">+ Category</button>
 		</footer>
 	</div>
@@ -152,6 +155,21 @@
 		</form>
 	</dialog>
 
+	<dialog id="app-info-dialog">
+		<p class="dialog-text">Helpful Links</p>
+		<hr>
+		<div id="app-info-dialog-button-box">
+			<button class="dialog-actions" type="button" id="info-github">
+				App Github
+			</button>
+			<button class="dialog-actions" type="button" id="info-see-shortcuts">
+				Your Shortcuts Data
+			</button>
+			<button class="dialog-actions" type="button" id="info-see-config">
+				Your App Config Data
+			</button>
+		</div>
+	</dialog>
 
 	<ul id="context-menu" class="context-menu">
 		<span id="context-menu-name"></span>

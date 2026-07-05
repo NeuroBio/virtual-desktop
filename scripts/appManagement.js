@@ -1,12 +1,15 @@
 /* global populateCategories */
 /* global setupAppSettingsPrompt */
+/* global setupAppInfoPrompt */
 /* global clearView */
 
 
 let appSettings;
+let appPaths;
 async function init() {
-	const { database, settings } = await window.electronAPI.init();
+	const { database, settings, paths } = await window.electronAPI.init();
 	appSettings = settings;
+	appPaths = paths;
 	populateCategories(database);
 }
 
@@ -28,9 +31,27 @@ async function updateAppSettings() {
 	});
 }
 
+async function updateAppInfo() {
+	setupAppInfoPrompt();
+}
+
 function requiresReload({ appSettings, priorSettings }) {
 	return appSettings.showExtensions !== priorSettings.showExtensions
 		|| appSettings.iconNameLines !== priorSettings.iconNameLines;
+}
+
+async function openGithub() {
+	await window.electronAPI.launchWebsite({
+		website: 'https://github.com/NeuroBio/virtual-desktop',
+	});
+}
+
+async function openShortcutsData() {
+	await window.electronAPI.launchShortcut({ filePath: appPaths.shortcuts });
+}
+
+async function openConfigData() {
+	await window.electronAPI.launchShortcut({ filePath: appPaths.config });
 }
 
 window.addEventListener('DOMContentLoaded', init, { once: true });

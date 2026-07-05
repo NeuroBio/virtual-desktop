@@ -146,14 +146,23 @@ ipcMain.handle('init', async () => {
 		await readyForUi(database);
 		const settings = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
-		return { success: true, database, settings };
+		return {
+			success: true,
+			database,
+			settings,
+			paths: {
+				shortcuts: databasePath,
+				config: configPath,
+			},
+		};
 	} catch (error) {
 		console.error("Failed to read database:", error);
 		return { success: false };
 	}
 });
 
-ipcMain.handle('launch-shortcut', async (event, filePath) => {
+ipcMain.handle('launch-shortcut', async (event, data) => {
+	const { filePath } = data;
 	try {
 		const errorMessage = await shell.openPath(filePath);
 
@@ -168,6 +177,17 @@ ipcMain.handle('launch-shortcut', async (event, filePath) => {
 	}
 });
 
+ipcMain.handle('launch-website', async (event, data) => {
+	const { website } = data;
+	try {
+		shell.openExternal(website);
+	} catch (error) {
+		console.error("Failed to launch website:", error);
+		return { success: false, error: error.message };
+	}
+
+
+});
 ipcMain.handle('delete-shortcut', async (event, data) => {
 	const { category, shortcutId } = data;
 	try {
