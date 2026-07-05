@@ -16,7 +16,7 @@ function setupConfirmPrompt({ message, callBack }) {
 function setupShortcutNamePrompt({ message, shortcut, callBack }) {
 	d3.select('#rename-text').text(message);
 	d3.select('#rename-original').text(`Original Name: ${shortcut.name}${addExtension(shortcut)}`);
-	d3.select('#shortcut-rename-extension').text(shortcut.extension);
+	d3.select('#shortcut-rename-extension').text(addExtension(shortcut));
 	const input = d3.select('#rename-prompt-input')
 		.property('value', shortcut.alias);
 	const prompt = d3.select('#shortcut-rename-prompt').node();
