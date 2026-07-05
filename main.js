@@ -5,6 +5,7 @@ const IconStrategy = require('./consts/IconStrategy.js');
 const AutoLaunch = require('auto-launch');
 let databasePath = '';
 let configPath = '';
+const appPath = app.getAppPath();
 let win;
 const iconCache = {};
 
@@ -153,6 +154,7 @@ ipcMain.handle('init', async () => {
 			paths: {
 				shortcuts: databasePath,
 				config: configPath,
+				app: appPath,
 			},
 		};
 	} catch (error) {

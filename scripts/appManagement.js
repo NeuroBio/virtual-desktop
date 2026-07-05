@@ -54,4 +54,8 @@ async function openConfigData() {
 	await window.electronAPI.launchShortcut({ filePath: appPaths.config });
 }
 
+async function openAppData() {
+	await window.electronAPI.launchShortcut({ filePath: appPaths.app });
+}
+
 window.addEventListener('DOMContentLoaded', init, { once: true });

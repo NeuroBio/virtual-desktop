@@ -5,6 +5,7 @@
 /* global openGithub */
 /* global openShortcutsData */
 /* global openConfigData */
+/* global openAppData */
 
 function setupConfirmPrompt({ message, callBack }) {
 	d3.select('#confirm-text').text(message);
@@ -101,6 +102,7 @@ function setupAppInfoPrompt() {
 	d3.select('#info-github').on('click', () => openGithub());
 	d3.select('#info-see-shortcuts').on('click', () => openShortcutsData());
 	d3.select('#info-see-config').on('click', () => openConfigData());
+	d3.select('#info-see-app').on('click', () => openAppData());
 	const prompt = d3.select('#app-info-dialog').node();
 	prompt.showModal();
 }
