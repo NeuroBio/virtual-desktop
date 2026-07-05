@@ -47,7 +47,7 @@ const appLauncher = new AutoLaunch({
 });
 
 app.whenReady().then(() => {
-	Menu.setApplicationMenu(null);
+	// Menu.setApplicationMenu(null);
 
 	if (app.isPackaged) {
 		app.setLoginItemSettings({
@@ -104,7 +104,7 @@ ipcMain.handle('add-file-shortcut', async (event, data) => {
 	addToDatabase({
 		database,
 		category,
-		path: filePath,
+		filePath,
 		isFile: true,
 	});
 
@@ -124,7 +124,7 @@ ipcMain.handle('add-folder-shortcut', async (event, data) => {
 	addToDatabase({
 		database,
 		category,
-		path: folderPath,
+		filePath: folderPath,
 		isFile: false,
 	});
 
@@ -135,6 +135,12 @@ ipcMain.handle('add-folder-shortcut', async (event, data) => {
 ipcMain.handle('init', async () => {
 	try {
 		const database = loadDatabase();
+		// For Migrations
+		// Object.values(database).forEach((category) => {
+		// 	Object.values(category.shortcuts).forEach((shortcut) => {
+		// 	});
+		// });
+		// saveDataBase(database);
 		await readyForUi(database);
 		return database;
 	} catch (error) {
@@ -387,34 +393,35 @@ function saveDataBase(database) {
 	fs.writeFileSync(databasePath, JSON.stringify(database, null, 2), 'utf-8');
 }
 
-function addToDatabase({ database, category, path, isFile }) {
+function addToDatabase({ database, category, filePath, isFile }) {
 	database[category] ??= { shortcuts: {} };
 	const id = Date.now().toString();
 	const name = getShortcutName(path);
 
 	database[category].shortcuts[id] = {
 		id,
-		path,
+		path: filePath,
 		isFile,
 		name,
 		alias: name,
 		position: Object.keys(database[category].shortcuts).length,
-		iconStrategy: getDefaultIconStrategy({ isFile, path }),
+		iconStrategy: getDefaultIconStrategy({ isFile, filePath }),
 		iconPath: '',
+		extension: path.extname(filePath)
 	};
 	saveDataBase(database);
 }
 
-function getDefaultIconStrategy({ isFile, path }) {
+function getDefaultIconStrategy({ isFile, filePath }) {
 	if (!isFile) {
 		IconStrategy.STANDARD;
 	}
 
-	if (path.toLowerCase().endsWith('.url')) {
+	if (filePath.toLowerCase().endsWith('.url')) {
 		return IconStrategy.STEAM;
 	}
 
-	if (path.toLowerCase().endsWith('.pdf')) {
+	if (filePath.toLowerCase().endsWith('.pdf')) {
 		return IconStrategy.PDF;
 	}
 
