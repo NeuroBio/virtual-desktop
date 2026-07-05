@@ -2,9 +2,9 @@
 /* global categoryNames */
 /* global setupCategorySettingsPrompt */
 /* global populateCategories */
-/* global clearView */
 /* global setupConfirmPrompt */
 /* global removeCategory */
+/* global clearView */
 
 async function addCategory() {
 	setupCategorySettingsPrompt({

@@ -1,6 +1,7 @@
 /* global d3 */
 /* global categoryNames */
 /* global appSettings */
+/* global addExtension */
 
 function setupConfirmPrompt({ message, callBack }) {
 	d3.select('#confirm-text').text(message);
@@ -14,7 +15,7 @@ function setupConfirmPrompt({ message, callBack }) {
 
 function setupShortcutNamePrompt({ message, shortcut, callBack }) {
 	d3.select('#rename-text').text(message);
-	d3.select('#rename-original').text(`Original Name: ${shortcut.name}`);
+	d3.select('#rename-original').text(`Original Name: ${shortcut.name}${addExtension(shortcut)}`);
 	d3.select('#shortcut-rename-extension').text(shortcut.extension);
 	const input = d3.select('#rename-prompt-input')
 		.property('value', shortcut.alias);
@@ -98,7 +99,7 @@ function setupIconPrompt({ category, shortcut, callBack }) {
 	const customIconInput = d3.select('#icon-prompt-custom-input');
 	const previewIcon = d3.select('#icon-prompt-preview');
 
-	d3.select('#icon-prompt-text').text(`Update Icon for ${shortcut.alias} in ${category}`);
+	d3.select('#icon-prompt-text').text(`Update Icon for ${shortcut.alias}${addExtension(shortcut)} in ${category}`);
 
 	previewIcon.attr('src', shortcut.icon);
 	const select = d3.select('#icon-prompt-select')

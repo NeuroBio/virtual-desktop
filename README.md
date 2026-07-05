@@ -27,6 +27,11 @@ Available actions include...
 		- Custom (point to any image file type)
 - App
 	- Configure startup location and size on desktop (via gear button)
+		- x
+		- y
+		- height
+		- width
+	- Show file extensions
 
 
 

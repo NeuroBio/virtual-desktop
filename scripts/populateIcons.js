@@ -17,6 +17,7 @@
 /* global deleteCategory */
 /* global addCategory */
 /* global updateAppSettings */
+/* global appSettings */
 
 // BE WARY OF CHANGING THIS VARIABLE
 let categoryNames = [];
@@ -171,7 +172,7 @@ function populateIcon(entry, shortcut, category, database) {
 			menu.style('left', `${leftPos}px`)
 				.style('top', `${topPos}px`);
 
-			d3.select('#context-menu-name').text(shortcut.alias);
+			d3.select('#context-menu-name').text(`${shortcut.alias}${addExtension(shortcut)}`);
 			d3.select('#remove-shortcut')
 				.on('click', () => removeShortcut({ event, category, shortcut }));
 			d3.select('#modify-icon')
@@ -197,7 +198,7 @@ function populateIcon(entry, shortcut, category, database) {
 	entry.append('span')
 		.attr('class', 'icon-name')
 		.attr('id', toShortcutNameId(shortcut.id))
-		.text(shortcut.alias);
+		.text(`${shortcut.alias}${addExtension(shortcut)}`);
 }
 
 function calculateContextPosition({ menu, event }) {
@@ -219,6 +220,12 @@ function calculateContextPosition({ menu, event }) {
 	}
 
 	return { leftPos, topPos };
+}
+
+function addExtension(shortcut) {
+	return appSettings.showExtensions
+		? shortcut.extension
+		: '';
 }
 
 function repopulateIcons({ database, category }) {

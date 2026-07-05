@@ -368,7 +368,9 @@ ipcMain.handle('update-app-settings', async (event, data) => {
 		};
 		win.setBounds(config);
 		fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
-		return { success: true, settings: config };
+		const database = loadDatabase();
+		await readyForUi(database);
+		return { success: true, settings: config, database };
 	} catch (error) {
 		console.error('Error saving app settings json:', error);
 		return { success: false };

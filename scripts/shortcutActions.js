@@ -6,6 +6,7 @@
 /* global setupIconPrompt */
 /* global repopulateIcon */
 /* global dismissContextMenu */
+/* global addExtension */
 
 async function addFileShortcut(category) {
 	const { success, database } = await window.electronAPI.addFileShortcut({ category });
@@ -32,7 +33,7 @@ async function launchShortcut(path) {
 
 async function removeShortcut({ event, category, shortcut }) {
 	setupConfirmPrompt({
-		message: `Remove ${shortcut.alias} from ${category}?`,
+		message: `Remove ${shortcut.alias}${addExtension(shortcut)} from ${category}?`,
 		callBack: async (response) => {
 			if (response === 'submit') {
 				const { success, database } = await window.electronAPI.deleteShortcut({
@@ -51,7 +52,7 @@ async function removeShortcut({ event, category, shortcut }) {
 
 async function renameShortcut({ event, category, shortcut }) {
 	setupShortcutNamePrompt({
-		message: `Rename ${shortcut.alias} from ${category}:`,
+		message: `Rename ${shortcut.alias}${addExtension(shortcut)} from ${category}:`,
 		shortcut,
 		callBack: async (response, alias) => {
 			if (response === 'submit') {
@@ -73,7 +74,7 @@ async function renameShortcut({ event, category, shortcut }) {
 
 async function moveShortcut({ event, oldCategory, shortcut }) {
 	setupSelectPrompt({
-		message: `Move ${shortcut.alias} from ${oldCategory} to:`,
+		message: `Move ${shortcut.alias}${addExtension(shortcut)} from ${oldCategory} to:`,
 		options: categoryNames.filter((name) => name !== oldCategory),
 		callBack: async (response, newCategory) => {
 			if (response === 'submit') {
