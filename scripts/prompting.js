@@ -1,5 +1,6 @@
 /* global d3 */
 /* global categoryNames */
+/* global appSettings */
 
 function setupConfirmPrompt({ message, callBack }) {
 	d3.select('#confirm-text').text(message);
@@ -68,11 +69,13 @@ function setupCategorySettingsPrompt({ category, message, callBack }) {
 	);
 }
 
-function setupAppSettingsPrompt({ callBack, settings }) {
-	const width = d3.select('#settings-width').property('value', settings.width);
-	const height = d3.select('#settings-height').property('value', settings.height);
-	const x = d3.select('#settings-x').property('value', settings.x);
-	const y = d3.select('#settings-y').property('value', settings.y);
+function setupAppSettingsPrompt({ callBack }) {
+	const width = d3.select('#settings-width').property('value', appSettings.width);
+	const height = d3.select('#settings-height').property('value', appSettings.height);
+	const x = d3.select('#settings-x').property('value', appSettings.x);
+	const y = d3.select('#settings-y').property('value', appSettings.y);
+	const showExtensions = d3.select('#app-settings-checkbox')
+		.property('checked', appSettings.showExtensions);
 	const prompt = d3.select('#app-settings-dialog').node();
 	prompt.showModal();
 	prompt.addEventListener('close',
@@ -81,6 +84,7 @@ function setupAppSettingsPrompt({ callBack, settings }) {
 			height: height.property('value'),
 			x: x.property('value'),
 			y: y.property('value'),
+			showExtensions: showExtensions.property('checked'),
 		}),
 		{ once: true }
 	);

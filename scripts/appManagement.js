@@ -1,18 +1,17 @@
 /* global populateCategories */
 /* global setupAppSettingsPrompt */
-
+let appSettings;
 async function init() {
-	const database = await window.electronAPI.init();
+	const { database, settings } = await window.electronAPI.init();
+	appSettings = settings;
 	populateCategories(database);
 }
 
 async function updateAppSettings() {
-	const { settings } = await window.electronAPI.getAppSettings();
 	setupAppSettingsPrompt({
-		settings,
 		callBack: async (response, formData) => {
 			if (response === 'submit') {
-				const { success, database } = await window.electronAPI.updateAppSettings(formData);
+				const { success, settings: appSettings } = await window.electronAPI.updateAppSettings(formData);
 			}
 		}
 	});

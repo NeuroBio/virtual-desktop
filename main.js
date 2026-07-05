@@ -10,7 +10,7 @@ const iconCache = {};
 
 function createWindow() {
 	win = new BrowserWindow({
-		...getScreenSizeAndPosition(),
+		...getConfig(),
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
 			contextIsolation: true,
@@ -21,7 +21,7 @@ function createWindow() {
 	win.loadFile(path.join(__dirname, 'index.html'));
 }
 
-function getScreenSizeAndPosition() {
+function getConfig() {
 	if (fs.existsSync(configPath)) {
 		try {
 			return JSON.parse(fs.readFileSync(configPath, 'utf8'));
@@ -38,6 +38,7 @@ function getScreenSizeAndPosition() {
 		height: screenHeight,
 		x: screenWidth - panelWidth,
 		y: 0,
+		showExtensions: false,
 	};
 }
 
@@ -68,7 +69,7 @@ app.whenReady().then(() => {
 	}
 
 	if (!fs.existsSync(configPath)) {
-		fs.writeFileSync(configPath, JSON.stringify(getScreenSizeAndPosition(), null, 2), 'utf-8');
+		fs.writeFileSync(configPath, JSON.stringify(getConfig(), null, 2), 'utf-8');
 		console.log(`Created App Settings: ${configPath}`);
 	} else {
 		console.log(`Loading App Settings: ${configPath}`);
@@ -142,10 +143,12 @@ ipcMain.handle('init', async () => {
 		// });
 		// saveDataBase(database);
 		await readyForUi(database);
-		return database;
+		const settings = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+
+		return { success: true, database, settings };
 	} catch (error) {
 		console.error("Failed to read database:", error);
-		return {};
+		return { success: false };
 	}
 });
 
@@ -354,19 +357,20 @@ ipcMain.handle('get-app-settings', async () => {
 });
 
 ipcMain.handle('update-app-settings', async (event, data) => {
-	const { width, height, x, y } = data;
+	const { width, height, x, y, showExtensions } = data;
 	try {
 		const config = {
 			width: +width,
 			height: +height,
 			x: +x,
 			y: +y,
+			showExtensions,
 		};
 		win.setBounds(config);
 		fs.writeFileSync(configPath, JSON.stringify(config, null, 2), 'utf-8');
-		return { success: true };
+		return { success: true, settings: config };
 	} catch (error) {
-		console.log('Error saving app settings json:', error);
+		console.error('Error saving app settings json:', error);
 		return { success: false };
 	}
 });
