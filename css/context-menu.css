@@ -12,6 +12,7 @@
 
 .context-menu-item {
 	list-style: none;
+	user-select: none;
 	margin: 0;
 	padding: 5px;
 	cursor: pointer;
@@ -26,6 +27,7 @@
 
 
 #context-menu-name {
+	user-select: none;
 	display: inline-block;
 	max-width: 150px;
 	padding: 3px;

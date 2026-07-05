@@ -73,6 +73,7 @@
 	border-radius: 0 0 5px 5px;
 
 	li {
+		user-select: none;
 		text-align: left;
 		padding-right: 10px;
 		list-style: none;
