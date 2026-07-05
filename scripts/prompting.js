@@ -11,12 +11,12 @@ function setupConfirmPrompt({ message, callBack }) {
 	);
 }
 
-function setupInputPrompt({ message, label, defaultValue, callBack }) {
-	d3.select('#input-text').text(message);
-	d3.select('#input-prompt-label').text(label);
-	const input = d3.select('#input-prompt-input')
+function setupShortcutNamePrompt({ message, label, defaultValue, callBack }) {
+	d3.select('#rename-text').text(message);
+	d3.select('#rename-prompt-label').text(label);
+	const input = d3.select('#rename-prompt-input')
 		.property('value', defaultValue || '');
-	const prompt = d3.select('#input-prompt').node();
+	const prompt = d3.select('#shortcut-rename-prompt').node();
 	prompt.showModal();
 	prompt.addEventListener('close',
 		() => callBack(prompt.returnValue, input.property('value')),

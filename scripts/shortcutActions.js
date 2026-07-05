@@ -1,6 +1,6 @@
 /* global repopulateIcons */
 /* global setupConfirmPrompt */
-/* global setupInputPrompt */
+/* global setupShortcutNamePrompt */
 /* global setupSelectPrompt */
 /* global categoryNames */
 /* global setupIconPrompt */
@@ -50,7 +50,7 @@ async function removeShortcut({ event, category, shortcut }) {
 }
 
 async function renameShortcut({ event, category, shortcut }) {
-	setupInputPrompt({
+	setupShortcutNamePrompt({
 		message: `Rename ${shortcut.alias} from ${category}:`,
 		label: 'Name',
 		defaultValue: shortcut.alias,
