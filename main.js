@@ -444,7 +444,7 @@ function addToDatabase({ database, category, filePath, isFile }) {
 
 function getDefaultIconStrategy({ isFile, filePath }) {
 	if (!isFile) {
-		IconStrategy.STANDARD;
+		return IconStrategy.STANDARD;
 	}
 
 	if (filePath.toLowerCase().endsWith('.url')) {
