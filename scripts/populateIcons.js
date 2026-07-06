@@ -1,6 +1,7 @@
 /* global d3 */
 /* global addFileShortcut */
 /* global addFolderShortcut */
+/* global addWebsiteShortcut */
 
 /* global launchShortcut */
 
@@ -82,6 +83,9 @@ function populateCategory({ main, database, category }) {
 	tray.append('li')
 		.text('+ Folder')
 		.on('click', () => addFolderShortcut(category));
+	tray.append('li')
+		.text('+ Website')
+		.on('click', () => addWebsiteShortcut(category));
 	tray.append('li')
 		.text('Settings')
 		.on('click', () => updateCategorySettings(categoryData));

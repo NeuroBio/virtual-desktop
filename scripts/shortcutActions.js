@@ -2,6 +2,7 @@
 /* global setupConfirmPrompt */
 /* global setupShortcutNamePrompt */
 /* global setupSelectPrompt */
+/* global setupAddWebsiteShortcutPrompt */
 /* global categoryNames */
 /* global setupIconPrompt */
 /* global repopulateIcon */
@@ -22,6 +23,17 @@ async function addFolderShortcut(category) {
 	if (success) {
 		repopulateIcons({ database, category });
 	}
+}
+
+async function addWebsiteShortcut(category) {
+	setupAddWebsiteShortcutPrompt({
+		callBack: async (response, website) => {
+			const { success, database } = await window.electronAPI.addWebsiteShortcut({ category, website });
+			if (success) {
+				repopulateIcons({ database, category });
+			}
+		}
+	});
 }
 
 async function launchShortcut(path) {

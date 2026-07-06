@@ -103,12 +103,12 @@ ipcMain.handle('add-file-shortcut', async (event, data) => {
 	}
 	const filePath = result.filePaths[0];
 	const database = loadDatabase();
-
 	addToDatabase({
 		database,
 		category,
 		filePath,
 		isFile: true,
+		isWebsite: false,
 	});
 
 	await readyForUi(database);
@@ -129,6 +129,22 @@ ipcMain.handle('add-folder-shortcut', async (event, data) => {
 		category,
 		filePath: folderPath,
 		isFile: false,
+		isWebsite: false,
+	});
+
+	await readyForUi(database);
+	return { success: true, database };
+});
+
+ipcMain.handle('add-website-shortcut', async (event, data) => {
+	const { category, website } = data;
+	const database = loadDatabase();
+	addToDatabase({
+		database,
+		category,
+		filePath: website,
+		isFile: false,
+		isWebsite: true,
 	});
 
 	await readyForUi(database);
@@ -423,15 +439,16 @@ function saveDataBase(database) {
 	fs.writeFileSync(databasePath, JSON.stringify(database, null, 2), 'utf-8');
 }
 
-function addToDatabase({ database, category, filePath, isFile }) {
+function addToDatabase({ database, category, filePath, isFile, isWebsite }) {
 	database[category] ??= { shortcuts: {} };
 	const id = Date.now().toString();
-	const name = getShortcutName(path);
+	const name = getShortcutName(filePath);
 
 	database[category].shortcuts[id] = {
 		id,
 		path: filePath,
 		isFile,
+		isWebsite,
 		name,
 		alias: name,
 		position: Object.keys(database[category].shortcuts).length,
@@ -473,7 +490,7 @@ async function applyIcons(database) {
 	};
 }
 
-async function getIcon({ isFile, path, iconStrategy, iconPath }) {
+async function getIcon({ isFile, isWebsite, path, iconStrategy, iconPath }) {
 	try {
 		switch (iconStrategy) {
 			case IconStrategy.STANDARD: {
@@ -481,7 +498,42 @@ async function getIcon({ isFile, path, iconStrategy, iconPath }) {
 					const nativeIcon = await app.getFileIcon(path, { size: 'large' });
 					return nativeIcon.toDataURL();
 				}
-				return 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4Ij48cGF0aCBmaWxsPSIjRkZDQTI4IiBkPSJNMTAgNEg0Yy0xLjEgMC0xLjk5LjktMS45OSAyTDIgMThjMCAxLjEuOSAyIDIgMmgxNmMxLjEgMCAyLS45IDItMlY4YzAtMS4xLS45LTItMi0yaC04bC0yLTJ6Ii8+PC9zdmc+';
+
+				return isWebsite
+					? `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAI5ElEQVRYhZ1XW2xc1RVd
+					+5x755V4PLbzIjHEQQSU8Erog3cDiKpVhSCVyke/Sv+KVInwUxX6AXxA+5fQVq2EKiWlEkF9iCSlUKUUB0JCAYGdgElI0t
+					jGEBw/Zzyexz3n7L37cWccJ4QW9YzOnJkz9961ztpr73OG8CXbzv6B0opVpa02jrcYxaaEpe9fpyZKg6OT2mwklWyEkds39
+					g6uKuVfe/q5/XsGdzxc/jLPpf91wQsDx/ryS5c8FBn7wJmqK1WbAfnY4qpVHUg845n+45iZq0PY49rebty9aS2GhsexsW/
+					lrmq9/sT3N28Y+b8I7OwfKF3S2/NYZKNtcWQxMpvghaNnkTWEO9Z34/TUPIYnqqg3E3DwKhygHKiYtbjush7UGk3ctfkKOB
+					923Ldx3cNfhGMuNrl74FjfqjU9A7lMZls+GyOfiXHd6iLWLe/A/TdcitvXr0Bv11IYa2FsBBvFZKOYjI1QyGW0tLSAiXJdC9kY
+					+Wxm295jw8M/+u3uvoth2Qsn/jh0YlNXrvByPpfpy8YRsnGEgc+ayGUsNq0uYm13HtYYrF9ZRBDg1GRVQUQEharqfMNRMZ8BV
+					LHh0uWUiSzOzsyVai5snelef2Dy3f6zX0hg98Cxvs5c4eVcLtOXjSLk4giRjfD8B7NwrPhqbxGRtRiebcISgYgwMFYGtUNJIF
+					XFp1NzODs7h2q9gSt7l9G+N45ifKpcqpTnv9113U17pgYOVi4ago5CoT+Xjfsy1iIbR4isRWwNfnzzaqzpzCMyFsYQDp8u61O
+					vnkalybBRRGQsyBgQGYCMKpEaG1G14SkTWczVmzg7U4WJbN+Gy9ce2N7fX2pjRu0Pez8c3p6No76MtchEESJjYY2BtRY9sUFv
+					SfHqcAXvjFV0TUeGiAz2Dk2AyEBBSmRIATXGkBqjYgw+nZ6H94K7brgKS/IZnJ2aRWdHoa+4NP8YgIfRzoLdbw70FXu6h5dms
+					8hlYuQyMWKbEoisxcun5nB4rAaoQJghIlAOEGEoMzh4CHuIb43Bg51DcE3NGdDX1q/GvbdejYbzqCcO840Ek1PVdQ/euXnEAE
+					A97ngsthE+mgn63Id1DE05OCaMVRm7hyp485MGVFVBLZkBTSVPrWco/UxkoAoFCGQMAEItcdrTuQSxtYiMQRxFiK1BsSOzDQD
+					MHTv7SzMJPVAPwD8/TjDZEPz1ZE0nG4ydRys4PuOAluFSoxHIEImqEggAQVsOBAHGGCJDaPGAMYbeP30GRITIGlgiRDYCRfSD
+					7f39JbN8Sc/WoMB4XWHIUMvMGK0EQDVdDVErWu26RTDG0AKx1l0KQFVVJCVnjCER1UtXdMMQwZBJSRhCZOJSMdez1QBmy/g8Y
+					3nB4pbeHK5dkUU2AgbPNtOVqUK1leqUArSNKyLaKgEAFFBVMmahuqoCxhBdtryUEjCEFjFYQzAWW4yIXP/ZPOPwWBO39OYxUQ
+					sgEP3w+hLyEZEIK6Dpi6WFrxDmlIguvC2gEqX3ERQioh9PlttBAlG7E6C6yQBYJyI6NucwNNnEioJFwzP+dnJOu3IWRESqmi4
+					HSgSQShtQSVXaq09doCm59n1ERAePntR64hd8Qq0wg0yfUdWSqgCieGO0hhUFC6ji+FSDshb43oZOdGUNVASqCuagi8FUBSrp
+					yMyqUJjFpFXRdJ6mKvMANJ0C8N77xzE+MV0yUAEUpCqoJ0GzFojBqiw4NVnT549M6nTNpTkvjFQBbhGSVm0IqiIgAqkI2l1Ew
+					MKqovjVn17BZLkKAJiZncOfX3wVx0+cBt337DszNoq7yFoYY7Dl8hIK2Qhvf1JDZzbSZUsydHq2iemaA3Txw9tFyKkKk4QA4Q
+					AJHsE1VYMn9g4+aapyIHZNlPIxbrt+Pfa9cgjVagXcrJfpnl1vDcRRtCmt5xYK6G3rSnT3ld1YkolhKHVsuRnw3HtncGKiqio
+					CiJBIgDIjeKdQoRQ8UfYO4EDsHdKewDcbqt5R8E1wksAndfVJ80j04KZLMl9Z03ku5ZDuaHAOmiStmCk6FXjwqg4cWZalff+e
+					xkQlSUE5ACrUKskKETpXstOwCTOgQtwiLMIQFpDSYHTD6uLGlcuKFzsrXLQFnsLm71yNv7w3Sq8MfQIRBkQg7AHhBVW0PTJDv
+					FeVlKS05ghCInrAiOqXgD3XpJUN16zuRHchgnin6WbEYO+VfXo8C61R2EOVKfhEJQQVCVBNTVyem9gbsch5AHNOcP9LE6i4lF
+					jwgptWZvDru5e3CChYBFes6MBD37wGv/nHERqbmEVqwlQF5QCIkIYACQHKAcoCVU5D5Z1K4N+XD+wpRyLnK1DMGNx8SQ6VhPHi
+					iRqma4ykHhZ+51Z6ERG6Clk8et/XUU8C6kmC3QcG6d2PRhG8S50fHIJ3KiGQBJ+SEQZUqZ74JwDAXEgAAB6/sYRVGYOpOY+CC
+					pIGLwqBwovAM8MzIzAjjgjFQhYZizQjmEn8AiBJOKdMSBINPuwY//uuEQAwF4YAAH7x5iyePDiNn9zYhW9dlkdIFhMQhBawX+
+					gBew+9j4ODJxXMxMGBg4MEDw3pAaXdVXh0ZN/vFo7pn1Pg54dn8OTrU/jpTV145NZuFDMGndlzR0cWRdN5JD7A+QAXAsZnqth
+					36AiUPXnXVPEO7BIN3ikHB2EPDh7B+5F609+5GO88Ez71xjSefH0aj97Wg0dv7wEAbL9nFcrNc9eICBrOgUD4w/53dGauRpOV
+					irJ3xN6pMpMEBw4BGhwFl6gGT8G7EUmS77alXyCwWIGRGY9Hbu3Gz77Rc54qpdz5CtQSh/1vH8fRU2OkwpAQqFWGSTmAU+mpH
+					Ybg3Uij6e/47KVdoxeGO5JFCjxz76rP+eHCJqLY/9YQDg2egkpa/VISHipC7UOphNAqy/6XM7PNx8sHdl30z2rEF8mC/05A8N
+					rbQ4r0HEDKTMIBKmnOB+9UOJQD87O1ueqOCyX/HAHv/NPvfjD60KK9AKqtfbv1vT0PAEc/PvOhhMSJ8FplKUGFOPiyShiRoIPM
+					/rXJ8fKeL1rxhe0/hMI7k0ik7lkAAAAASUVORK5CYII=`
+					: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4Ij48cGF0aCBmaWxsPSIjRkZDQTI4IiBkPSJNMTAgNEg0Yy0xLjEgMC0xLjk5LjktMS45OSAyTDIgMThjMCAxLjEuOSAyIDIgMmgxNmMxLjEgMCAyLS45IDItMlY4YzAtMS4xLS45LTItMi0yaC04bC0yLTJ6Ii8+PC9zdmc+';
 			}
 			case IconStrategy.STEAM: {
 				const steamIcon = await getSteamIcon(path);

@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 	init: () => ipcRenderer.invoke('init'),
 	addFileShortcut: (data) => ipcRenderer.invoke('add-file-shortcut', data),
 	addFolderShortcut: (data) => ipcRenderer.invoke('add-folder-shortcut', data),
+	addWebsiteShortcut: (data) => ipcRenderer.invoke('add-website-shortcut', data),
 	launchShortcut: (data) => ipcRenderer.invoke('launch-shortcut', data),
 	launchWebsite: (data) => ipcRenderer.invoke('launch-website', data),
 	deleteShortcut: (data) => ipcRenderer.invoke('delete-shortcut', data),

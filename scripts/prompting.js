@@ -31,6 +31,16 @@ function setupShortcutNamePrompt({ message, shortcut, callBack }) {
 	);
 }
 
+function setupAddWebsiteShortcutPrompt({ callBack }) {
+	const input = d3.select('#add-html-prompt-input').property('value', '');
+	const prompt = d3.select('#add-html-prompt').node();
+	prompt.showModal();
+	prompt.addEventListener('close',
+		() => callBack(prompt.returnValue, input.property('value')),
+		{ once: true }
+	);
+}
+
 function setupSelectPrompt({ message, options, callBack }) {
 	d3.select('#select-text').text(message);
 	const select = d3.select('#select-prompt-select')
